@@ -9,6 +9,7 @@ obj/
 
 ## User-specific files
 *.userprefs
+appsettings.User.json
 
 ## OS files
 .DS_Store
