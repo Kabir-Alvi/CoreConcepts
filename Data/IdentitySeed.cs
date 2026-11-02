@@ -57,6 +57,43 @@ public static class IdentitySeed
 
     private static async Task SeedInitialDataAsync(ApplicationDbContext db)
     {
+        // Seed Leadership Members if empty
+        if (!await db.CompanyLeaders.AnyAsync())
+        {
+            db.CompanyLeaders.AddRange(
+                new CompanyLeader
+                {
+                    FullName = "Tanvir Ahmed",
+                    Designation = "Chief Executive Officer (CEO)",
+                    HierarchyRank = 1,
+                    Speech = "At CoreConcepts, we believe that world-class software is engineered when passionate young minds meet robust architectural standards. Our mission is to solve real-world industry problems while cultivating high-impact software leaders.",
+                    Email = "ceo@coreconcepts.com",
+                    LinkedInUrl = "https://linkedin.com",
+                    IsActive = true
+                },
+                new CompanyLeader
+                {
+                    FullName = "Shahriar Kabir",
+                    Designation = "Managing Director (MD)",
+                    HierarchyRank = 2,
+                    Speech = "Innovation and execution are the core pillars of CC. Whether providing custom enterprise CRM platforms or mentoring interns across software and creative graphics, we hold ourselves to the highest code of conduct and excellence.",
+                    Email = "md@coreconcepts.com",
+                    LinkedInUrl = "https://linkedin.com",
+                    IsActive = true
+                },
+                new CompanyLeader
+                {
+                    FullName = "Nafis Fuad",
+                    Designation = "Executive Director & Head of Engineering",
+                    HierarchyRank = 3,
+                    Speech = "Technology is evolving rapidly. Our team ensures that our engineering stack and our internship curricula reflect the latest cloud, AI, and secure architecture patterns.",
+                    Email = "engineering@coreconcepts.com",
+                    LinkedInUrl = "https://linkedin.com",
+                    IsActive = true
+                }
+            );
+        }
+
         // Seed Categories
         if (!await db.JobCategories.AnyAsync())
         {

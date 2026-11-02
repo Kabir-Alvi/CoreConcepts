@@ -52,6 +52,91 @@ public class AdminController(
     }
 
     // ==========================================
+    // COMPANY LEADERS / DIRECTORS / CEO MANAGEMENT
+    // ==========================================
+    public async Task<IActionResult> Leaders()
+    {
+        var leaders = await context.CompanyLeaders
+            .OrderBy(l => l.HierarchyRank)
+            .ThenBy(l => l.CreatedAt)
+            .ToListAsync();
+        return View(leaders);
+    }
+
+    [HttpGet]
+    public IActionResult CreateLeader() => View(new CompanyLeader());
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateLeader(CompanyLeader leader, IFormFile? photoFile)
+    {
+        if (ModelState.IsValid)
+        {
+            if (photoFile != null && photoFile.Length > 0)
+            {
+                leader.PhotoPath = await SaveUploadedFileAsync(photoFile, "leaders");
+            }
+
+            context.CompanyLeaders.Add(leader);
+            await context.SaveChangesAsync();
+            TempData["Success"] = $"Leader '{leader.FullName}' ({leader.Designation}) added successfully!";
+            return RedirectToAction("About", "Home");
+        }
+        return View(leader);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> EditLeader(int id)
+    {
+        var leader = await context.CompanyLeaders.FindAsync(id);
+        if (leader == null) return NotFound();
+        return View(leader);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditLeader(CompanyLeader leader, IFormFile? photoFile)
+    {
+        if (ModelState.IsValid)
+        {
+            var existing = await context.CompanyLeaders.FindAsync(leader.Id);
+            if (existing == null) return NotFound();
+
+            if (photoFile != null && photoFile.Length > 0)
+            {
+                existing.PhotoPath = await SaveUploadedFileAsync(photoFile, "leaders");
+            }
+
+            existing.FullName = leader.FullName;
+            existing.Designation = leader.Designation;
+            existing.HierarchyRank = leader.HierarchyRank;
+            existing.Speech = leader.Speech;
+            existing.LinkedInUrl = leader.LinkedInUrl;
+            existing.Email = leader.Email;
+            existing.IsActive = leader.IsActive;
+
+            await context.SaveChangesAsync();
+            TempData["Success"] = $"Updated details for {leader.FullName}!";
+            return RedirectToAction("About", "Home");
+        }
+        return View(leader);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteLeader(int id)
+    {
+        var leader = await context.CompanyLeaders.FindAsync(id);
+        if (leader != null)
+        {
+            context.CompanyLeaders.Remove(leader);
+            await context.SaveChangesAsync();
+            TempData["Success"] = "Leader removed!";
+        }
+        return RedirectToAction("About", "Home");
+    }
+
+    // ==========================================
     // HERO BANNERS MANAGEMENT
     // ==========================================
     public async Task<IActionResult> Banners()

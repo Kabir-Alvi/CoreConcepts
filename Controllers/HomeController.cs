@@ -50,7 +50,21 @@ public class HomeController(
     public async Task<IActionResult> About()
     {
         var settings = await settingsService.GetSettingsAsync();
-        return View(settings);
+
+        // Sort automatically by Seniority / Hierarchy Rank: Lower number = Higher rank (CEO #1, MD #2, etc.)
+        var leaders = await context.CompanyLeaders
+            .Where(l => l.IsActive)
+            .OrderBy(l => l.HierarchyRank)
+            .ThenBy(l => l.CreatedAt)
+            .ToListAsync();
+
+        var vm = new AboutViewModel
+        {
+            Settings = settings,
+            Leaders = leaders
+        };
+
+        return View(vm);
     }
 
     [Authorize(Roles = IdentitySeed.AdminRole)]

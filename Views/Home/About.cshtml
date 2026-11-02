@@ -1,11 +1,11 @@
-@model CoreConcepts.Models.SiteSettings
+@model CoreConcepts.Models.AboutViewModel
 @{
-    ViewData["Title"] = "About Us - CoreConcepts (CC)";
+    ViewData["Title"] = "About Us - " + Model.Settings.CompanyName + " (" + Model.Settings.CompanyShortName + ")";
 }
 
 <div class="bg-dark text-white py-5 mb-5 position-relative">
     <div class="container text-center">
-        <h1 class="display-5 fw-bold">About @Model.CompanyName (@Model.CompanyShortName)</h1>
+        <h1 class="display-5 fw-bold">About @Model.Settings.CompanyName (@Model.Settings.CompanyShortName)</h1>
         <p class="lead text-light opacity-75 mx-auto" style="max-width: 650px;">
             Pioneering digital enterprise solutions, modern UI/UX design, and practical industry internships.
         </p>
@@ -19,14 +19,20 @@
         <div class="alert alert-warning d-flex justify-content-between align-items-center rounded-3 shadow-xs mb-4">
             <div>
                 <i class="bi bi-shield-lock-fill me-2"></i>
-                <strong>Admin Mode:</strong> You can edit the mission text and pillars directly.
+                <strong>Admin Mode:</strong> You can edit the mission text, focus pillars, or add leadership/executive members.
             </div>
-            <a asp-action="EditAbout" class="btn btn-warning btn-sm fw-semibold">
-                <i class="bi bi-pencil-square me-1"></i> Edit This Page Content
-            </a>
+            <div class="d-flex gap-2">
+                <a asp-action="EditAbout" class="btn btn-warning btn-sm fw-semibold">
+                    <i class="bi bi-pencil-square me-1"></i> Edit Mission & Pillars
+                </a>
+                <a asp-controller="Admin" asp-action="CreateLeader" class="btn btn-primary btn-sm fw-semibold">
+                    <i class="bi bi-person-plus-fill me-1"></i> Add Leader / Director
+                </a>
+            </div>
         </div>
     }
 
+    <!-- Mission & Pillars Section -->
     <div class="row align-items-center g-5 mb-5">
         <div class="col-lg-6">
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -39,10 +45,10 @@
                 }
             </div>
 
-            <h2 class="fw-bold mb-3">@Model.AboutMissionTitle</h2>
+            <h2 class="fw-bold mb-3">@Model.Settings.AboutMissionTitle</h2>
             
             <div class="text-muted" style="line-height: 1.8; white-space: pre-line;">
-                @Model.AboutMissionContent
+                @Model.Settings.AboutMissionContent
             </div>
 
             <div class="d-flex gap-3 mt-4">
@@ -56,32 +62,138 @@
                 <div class="col-6">
                     <div class="card border-0 shadow-sm p-4 rounded-4 bg-light text-center h-100">
                         <i class="bi bi-code-slash display-4 text-primary mb-2"></i>
-                        <h4 class="fw-bold mb-1">@Model.Pillar1Title</h4>
-                        <p class="text-muted small mb-0">@Model.Pillar1Desc</p>
+                        <h4 class="fw-bold mb-1">@Model.Settings.Pillar1Title</h4>
+                        <p class="text-muted small mb-0">@Model.Settings.Pillar1Desc</p>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="card border-0 shadow-sm p-4 rounded-4 bg-light text-center h-100">
                         <i class="bi bi-palette display-4 text-primary mb-2"></i>
-                        <h4 class="fw-bold mb-1">@Model.Pillar2Title</h4>
-                        <p class="text-muted small mb-0">@Model.Pillar2Desc</p>
+                        <h4 class="fw-bold mb-1">@Model.Settings.Pillar2Title</h4>
+                        <p class="text-muted small mb-0">@Model.Settings.Pillar2Desc</p>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="card border-0 shadow-sm p-4 rounded-4 bg-light text-center h-100">
                         <i class="bi bi-mortarboard display-4 text-success mb-2"></i>
-                        <h4 class="fw-bold mb-1">@Model.Pillar3Title</h4>
-                        <p class="text-muted small mb-0">@Model.Pillar3Desc</p>
+                        <h4 class="fw-bold mb-1">@Model.Settings.Pillar3Title</h4>
+                        <p class="text-muted small mb-0">@Model.Settings.Pillar3Desc</p>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="card border-0 shadow-sm p-4 rounded-4 bg-light text-center h-100">
                         <i class="bi bi-shield-check display-4 text-info mb-2"></i>
-                        <h4 class="fw-bold mb-1">@Model.Pillar4Title</h4>
-                        <p class="text-muted small mb-0">@Model.Pillar4Desc</p>
+                        <h4 class="fw-bold mb-1">@Model.Settings.Pillar4Title</h4>
+                        <p class="text-muted small mb-0">@Model.Settings.Pillar4Desc</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ======================================================== -->
+    <!-- LEADERSHIP & EXECUTIVE BOARD SECTION (Hierarchical Sort) -->
+    <!-- ======================================================== -->
+    <div class="pt-5 mt-5 border-top">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <span class="badge bg-primary text-uppercase px-3 py-2 mb-2">Executive Leadership</span>
+                <h2 class="fw-bold mb-0">Board of Directors & Executives</h2>
+                <p class="text-muted mb-0 mt-1">Guiding CoreConcepts (CC) with vision, integrity, and engineering excellence.</p>
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin" asp-action="CreateLeader" class="btn btn-outline-primary shadow-xs">
+                    <i class="bi bi-person-plus me-1"></i> Add Member
+                </a>
+            }
+        </div>
+
+        @if (Model.Leaders != null && Model.Leaders.Any())
+        {
+            <div class="row g-4">
+                @foreach (var leader in Model.Leaders)
+                {
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white feature-card position-relative">
+                            
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="position-absolute top-0 end-0 m-3 d-flex gap-1">
+                                    <span class="badge bg-secondary me-1 py-1 px-2" title="Hierarchy Rank">Rank: #@leader.HierarchyRank</span>
+                                    <a asp-controller="Admin" asp-action="EditLeader" asp-route-id="@leader.Id" class="btn btn-warning btn-sm py-0 px-2" style="font-size: 0.8rem;">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <form asp-controller="Admin" asp-action="DeleteLeader" asp-route-id="@leader.Id" method="post" class="d-inline" onsubmit="return confirm('Remove @leader.FullName from leadership?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger btn-sm py-0 px-2" style="font-size: 0.8rem;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+
+                            <div class="d-flex flex-column flex-sm-row gap-4 align-items-center align-items-sm-start">
+                                <!-- Leader Photo -->
+                                <div class="flex-shrink-0 text-center">
+                                    @if (!string.IsNullOrEmpty(leader.PhotoPath))
+                                    {
+                                        <img src="@leader.PhotoPath" alt="@leader.FullName" class="rounded-circle shadow-sm border border-3 border-light" style="width: 120px; height: 120px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 120px; height: 120px; font-size: 2.5rem; font-weight: 700;">
+                                            @(leader.FullName.Length > 0 ? leader.FullName.Substring(0, 1).ToUpper() : "C")
+                                        </div>
+                                    }
+
+                                    <!-- Quick Social / Email -->
+                                    <div class="mt-2 d-flex justify-content-center gap-2">
+                                        @if (!string.IsNullOrEmpty(leader.LinkedInUrl))
+                                        {
+                                            <a href="@leader.LinkedInUrl" target="_blank" class="text-primary"><i class="bi bi-linkedin fs-5"></i></a>
+                                        }
+                                        @if (!string.IsNullOrEmpty(leader.Email))
+                                        {
+                                            <a href="mailto:@leader.Email" class="text-muted"><i class="bi bi-envelope-fill fs-5"></i></a>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- Leader Info & Speech -->
+                                <div class="flex-grow-1 text-center text-sm-start">
+                                    <h4 class="fw-bold mb-1">@leader.FullName</h4>
+                                    <div class="text-primary fw-semibold mb-3">@leader.Designation</div>
+                                    
+                                    <div class="p-3 bg-light rounded-3 position-relative">
+                                        <i class="bi bi-quote fs-3 text-primary opacity-50 position-absolute top-0 start-0 ms-1 mt-n2"></i>
+                                        <p class="text-muted small fst-italic mb-0 ps-3" style="line-height: 1.6; white-space: pre-line;">
+                                            @leader.Speech
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="card border-0 shadow-sm p-5 text-center bg-light rounded-4">
+                <i class="bi bi-people display-4 text-muted mb-2 opacity-50"></i>
+                <h5 class="text-muted">No leadership profiles published yet.</h5>
+                @if (User.IsInRole("Admin"))
+                {
+                    <p class="text-muted small">Add your CEO, Managing Director, and Board Members to display here.</p>
+                    <div>
+                        <a asp-controller="Admin" asp-action="CreateLeader" class="btn btn-primary btn-sm px-4">
+                            <i class="bi bi-plus-lg me-1"></i> Add Leadership Member
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
 </div>
