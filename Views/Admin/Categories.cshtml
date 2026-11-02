@@ -1,0 +1,75 @@
+@model IEnumerable<CoreConcepts.Models.JobCategory>
+@{
+    ViewData["Title"] = "Job & Internship Categories";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Career Categories & Disciplines</h2>
+            <p class="text-muted mb-0">Define fields like Software Engineering, Graphics Design, UI/UX, SQA, etc.</p>
+        </div>
+        <div>
+            <a asp-action="Jobs" class="btn btn-outline-primary">
+                <i class="bi bi-briefcase me-1"></i> Back to Jobs
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold mb-3">Add New Category</h5>
+                <form asp-action="CreateCategory" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Category Name</label>
+                        <input type="text" name="Name" class="form-control" placeholder="e.g. Graphics Design" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description (Optional)</label>
+                        <textarea name="Description" class="form-control" rows="2" placeholder="Brief note..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Category</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Openings</th>
+                                <th class="text-end pe-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cat in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 text-muted">#@cat.Id</td>
+                                    <td class="fw-bold">@cat.Name</td>
+                                    <td><small class="text-muted">@cat.Description</small></td>
+                                    <td><span class="badge bg-light text-dark border">@cat.JobOpenings.Count Jobs</span></td>
+                                    <td class="text-end pe-4">
+                                        <form asp-action="DeleteCategory" asp-route-id="@cat.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this category?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

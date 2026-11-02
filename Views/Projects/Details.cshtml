@@ -1,0 +1,70 @@
+@model CoreConcepts.Models.CompanyProject
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Projects" asp-action="Index">Projects</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <h1 class="fw-bold mb-3">@Model.Title</h1>
+            <div class="d-flex gap-2 mb-4">
+                <span class="badge bg-primary fs-6">@Model.Category</span>
+                <span class="badge @(Model.Status == "Completed" ? "bg-success" : "bg-warning text-dark") fs-6">@Model.Status</span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <div class="mb-4 rounded-4 overflow-hidden shadow-sm">
+                    <img src="@Model.ImagePath" class="img-fluid w-100" alt="@Model.Title" style="max-height: 450px; object-fit: cover;">
+                </div>
+            }
+
+            <h4 class="fw-bold mb-3">Project Overview</h4>
+            <div class="lead fs-6 text-muted mb-4" style="line-height: 1.8; white-space: pre-line;">
+                @Model.Description
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ProjectUrl))
+            {
+                <a href="@Model.ProjectUrl" target="_blank" class="btn btn-primary btn-lg shadow-sm">
+                    <i class="bi bi-box-arrow-up-right me-2"></i> Visit Live Application
+                </a>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 rounded-3 bg-light">
+                <h5 class="fw-bold mb-3">Project Information</h5>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                    <li>
+                        <small class="text-muted d-block">Category</small>
+                        <span class="fw-semibold">@Model.Category</span>
+                    </li>
+                    <li>
+                        <small class="text-muted d-block">Status</small>
+                        <span class="fw-semibold">@Model.Status</span>
+                    </li>
+                    @if (!string.IsNullOrEmpty(Model.Technologies))
+                    {
+                        <li>
+                            <small class="text-muted d-block">Technologies & Tools</small>
+                            <span class="badge bg-white text-dark border p-2 mt-1">@Model.Technologies</span>
+                        </li>
+                    }
+                    <li>
+                        <small class="text-muted d-block">Published Date</small>
+                        <span class="fw-semibold">@Model.CreatedAt.ToString("MMMM dd, yyyy")</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

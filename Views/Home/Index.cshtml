@@ -1,8 +1,194 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model CoreConcepts.Models.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Innovative Software Solutions & Tech Careers";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Dynamic Hero Carousel / Banner Section -->
+@if (Model.Banners != null && Model.Banners.Any())
+{
+    <div id="heroCarousel" class="carousel slide carousel-fade mb-5 shadow-sm" data-bs-ride="carousel">
+        @if (Model.Banners.Count > 1)
+        {
+            <div class="carousel-indicators">
+                @for (int i = 0; i < Model.Banners.Count; i++)
+                {
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")"></button>
+                }
+            </div>
+        }
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.Banners.Count; i++)
+            {
+                var banner = Model.Banners[i];
+                <div class="carousel-item @(i == 0 ? "active" : "") hero-slider-item d-flex align-items-center"
+                     style="@(!string.IsNullOrEmpty(banner.ImagePath) ? $"background: linear-gradient(rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.85)), url('{banner.ImagePath}') center/cover no-repeat;" : "")">
+                    <div class="container py-5 text-white">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8 col-md-10 py-5">
+                                <span class="badge bg-primary px-3 py-2 text-uppercase letter-spacing-1 rounded-pill mb-3">
+                                    <i class="bi bi-stars me-1"></i> CoreConcepts Innovation
+                                </span>
+                                <h1 class="display-4 fw-bold lh-sm mb-3">@banner.Title</h1>
+                                <p class="lead text-light mb-4" style="max-width: 650px; font-weight: 300;">
+                                    @banner.Subtitle
+                                </p>
+                                <div class="d-flex flex-wrap gap-3">
+                                    @if (!string.IsNullOrEmpty(banner.ButtonText) && !string.IsNullOrEmpty(banner.ButtonUrl))
+                                    {
+                                        <a href="@banner.ButtonUrl" class="btn btn-primary btn-lg px-4 shadow">
+                                            @banner.ButtonText <i class="bi bi-arrow-right ms-2"></i>
+                                        </a>
+                                    }
+                                    <a asp-controller="Home" asp-action="About" class="btn btn-outline-light btn-lg px-4">
+                                        Learn More
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.Banners.Count > 1)
+        {
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        }
+    </div>
+}
+
+<div class="container my-5">
+    
+    <!-- Dynamic Feature / Service Cards Section -->
+    <div class="text-center mb-5">
+        <h6 class="text-primary fw-bold text-uppercase">What We Do & Offer</h6>
+        <h2 class="fw-bold">Enterprise Capabilities & Talent Growth</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+            At CoreConcepts (CC), we bridge cutting-edge technology with high-caliber talents across software, graphics, and cloud architecture.
+        </p>
+    </div>
+
+    @if (Model.FeatureCards != null && Model.FeatureCards.Any())
+    {
+        <div class="row g-4 mb-5">
+            @foreach (var card in Model.FeatureCards)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm feature-card p-4">
+                        <div class="card-body d-flex flex-column p-0">
+                            <div class="card-icon-box bg-light text-primary mb-3 shadow-xs">
+                                <i class="bi @(string.IsNullOrEmpty(card.IconClass) ? "bi-layers" : card.IconClass)"></i>
+                            </div>
+                            <h5 class="fw-bold mb-2">@card.Title</h5>
+                            <p class="text-muted flex-grow-1" style="font-size: 0.95rem;">@card.Description</p>
+                            @if (!string.IsNullOrEmpty(card.LinkUrl))
+                            {
+                                <a href="@card.LinkUrl" class="text-primary fw-semibold text-decoration-none mt-2">
+                                    Explore <i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Dynamic Featured Projects Section -->
+    <div class="d-flex justify-content-between align-items-end mb-4 pt-4 border-top">
+        <div>
+            <h6 class="text-primary fw-bold text-uppercase">Portfolio</h6>
+            <h2 class="fw-bold mb-0">Featured Client & Internal Projects</h2>
+        </div>
+        <a asp-controller="Projects" asp-action="Index" class="btn btn-outline-primary">
+            View All Projects <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+
+    @if (Model.FeaturedProjects != null && Model.FeaturedProjects.Any())
+    {
+        <div class="row g-4 mb-5">
+            @foreach (var project in Model.FeaturedProjects)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm feature-card overflow-hidden">
+                        @if (!string.IsNullOrEmpty(project.ImagePath))
+                        {
+                            <img src="@project.ImagePath" class="card-img-top" alt="@project.Title" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 180px;">
+                                <i class="bi bi-laptop display-4 opacity-50"></i>
+                            </div>
+                        }
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge badge-soft-primary px-2 py-1">@project.Category</span>
+                                <span class="badge @(project.Status == "Completed" ? "bg-success" : "bg-warning text-dark")">@project.Status</span>
+                            </div>
+                            <h5 class="fw-bold mb-2">@project.Title</h5>
+                            <p class="text-muted small flex-grow-1">
+                                @(project.Description.Length > 120 ? project.Description.Substring(0, 120) + "..." : project.Description)
+                            </p>
+                            @if (!string.IsNullOrEmpty(project.Technologies))
+                            {
+                                <div class="mb-3">
+                                    <small class="text-muted fw-bold">Tech:</small>
+                                    <small class="badge bg-light text-dark border">@project.Technologies</small>
+                                </div>
+                            }
+                            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id" class="btn btn-outline-secondary btn-sm mt-auto">
+                                View Details <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Dynamic Career & Internship Highlight Section -->
+    <div class="bg-light rounded-4 p-4 p-md-5 my-5 border shadow-sm">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+                <span class="badge bg-success mb-2 px-3 py-2">Join CoreConcepts (CC) Team</span>
+                <h2 class="fw-bold">Open Vacancies & Internships</h2>
+                <p class="text-muted mb-0">Kickstart your career in Software Engineering, Creative Graphics Design, and Quality Assurance.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-controller="Career" asp-action="Index" class="btn btn-primary px-4">
+                    View All Openings <i class="bi bi-briefcase ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var job in Model.LatestJobs)
+            {
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-xs h-100 p-3 bg-white rounded-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="badge bg-primary-subtle text-primary mb-1">@job.JobCategory?.Name</span>
+                                <span class="badge bg-dark">@job.Type</span>
+                                <h5 class="fw-bold mb-1 mt-2">@job.Title</h5>
+                                <p class="text-muted small mb-2"><i class="bi bi-geo-alt me-1"></i> @job.Location</p>
+                            </div>
+                            <a asp-controller="Career" asp-action="Apply" asp-route-id="@job.Id" class="btn btn-sm btn-outline-primary px-3">
+                                Apply Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
 </div>

@@ -1,0 +1,133 @@
+@model IEnumerable<CoreConcepts.Models.JobApplication>
+@{
+    ViewData["Title"] = "Candidate Resumes & Applications";
+    var jobs = ViewBag.Jobs as List<CoreConcepts.Models.JobOpening> ?? new List<CoreConcepts.Models.JobOpening>();
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge bg-primary mb-1">Talent Acquisition</span>
+            <h2 class="fw-bold mb-0">Received Applications & CV Files</h2>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Admin" class="btn btn-outline-secondary">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card border-0 shadow-sm p-3 mb-4 rounded-3">
+        <form method="get" asp-action="Applications" class="row g-2 align-items-center">
+            <div class="col-md-6">
+                <select name="jobId" class="form-select">
+                    <option value="0">All Jobs & Internships</option>
+                    @foreach (var job in jobs)
+                    {
+                        <option value="@job.Id" selected="@(ViewBag.SelectedJobId == job.Id ? "selected" : null)">@job.Title</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="status" class="form-select">
+                    <option value="All">All Statuses</option>
+                    <option value="Pending" selected="@(ViewBag.SelectedStatus == "Pending" ? "selected" : null)">Pending Review</option>
+                    <option value="Reviewed" selected="@(ViewBag.SelectedStatus == "Reviewed" ? "selected" : null)">Reviewed</option>
+                    <option value="Shortlisted" selected="@(ViewBag.SelectedStatus == "Shortlisted" ? "selected" : null)">Shortlisted</option>
+                    <option value="Rejected" selected="@(ViewBag.SelectedStatus == "Rejected" ? "selected" : null)">Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                <a asp-action="Applications" class="btn btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Applications Table -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Applicant Profile</th>
+                        <th>Position Applied</th>
+                        <th>Contact Info</th>
+                        <th>Note / Links</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Resume / CV</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var app in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold">@app.FullName</div>
+                                    <small class="text-muted">Applied: @app.AppliedAt.ToString("MMM dd, yyyy")</small>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@app.JobOpening?.Title</div>
+                                    <span class="badge bg-light text-dark border">@app.JobOpening?.JobCategory?.Name</span>
+                                    <span class="badge @(app.JobOpening?.Type == "Internship" ? "bg-success" : "bg-dark")">@app.JobOpening?.Type</span>
+                                </td>
+                                <td>
+                                    <div><a href="mailto:@app.Email" class="text-decoration-none"><i class="bi bi-envelope text-primary me-1"></i> @app.Email</a></div>
+                                    <div><a href="tel:@app.Phone" class="text-muted text-decoration-none small"><i class="bi bi-telephone text-primary me-1"></i> @app.Phone</a></div>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(app.CoverNote))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-light border" data-bs-toggle="popover" title="Cover Note / Portfolio" data-bs-content="@app.CoverNote">
+                                            <i class="bi bi-chat-left-text me-1"></i> View Note
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">None</span>
+                                    }
+                                </td>
+                                <td>
+                                    <form asp-action="UpdateApplicationStatus" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@app.Id" />
+                                        <select name="status" onchange="this.form.submit()" class="form-select form-select-sm fw-semibold @(app.Status == "Shortlisted" ? "border-success text-success" : app.Status == "Rejected" ? "border-danger text-danger" : "")">
+                                            <option value="Pending" selected="@(app.Status == "Pending" ? "selected" : null)">Pending</option>
+                                            <option value="Reviewed" selected="@(app.Status == "Reviewed" ? "selected" : null)">Reviewed</option>
+                                            <option value="Shortlisted" selected="@(app.Status == "Shortlisted" ? "selected" : null)">Shortlisted</option>
+                                            <option value="Rejected" selected="@(app.Status == "Rejected" ? "selected" : null)">Rejected</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a href="@app.CvFilePath" target="_blank" class="btn btn-primary btn-sm px-3 shadow-xs">
+                                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Download CV
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox display-4 d-block mb-2 text-secondary opacity-50"></i>
+                                No applications match the selected criteria.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+    </script>
+}

@@ -1,0 +1,60 @@
+@model CoreConcepts.Models.HomeFeatureCard
+@{
+    var isEdit = Model.Id > 0;
+    ViewData["Title"] = isEdit ? "Edit Feature Card" : "Add Feature Card";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                <h3 class="fw-bold mb-4">@(isEdit ? "Edit Feature Card" : "Add Feature Card")</h3>
+
+                <form asp-action="@(isEdit ? "EditFeatureCard" : "CreateFeatureCard")" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    @if (isEdit) { <input type="hidden" asp-for="Id" /> }
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-semibold"></label>
+                        <input asp-for="Title" class="form-control" required placeholder="e.g. Software Development" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3" required placeholder="Short summary of this offering..."></textarea>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="IconClass" class="form-label fw-semibold">Bootstrap Icon Class</label>
+                            <input asp-for="IconClass" class="form-control" placeholder="e.g. bi-code-slash or bi-palette" />
+                            <small class="text-muted">Use icons from <a href="https://icons.getbootstrap.com/" target="_blank">Bootstrap Icons</a></small>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LinkUrl" class="form-label fw-semibold">Link (URL)</label>
+                            <input asp-for="LinkUrl" class="form-control" placeholder="e.g. /Projects or /Career" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="DisplayOrder" class="form-label fw-semibold">Order</label>
+                            <input asp-for="DisplayOrder" type="number" class="form-control" />
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center mt-4">
+                            <div class="form-check form-switch fs-5">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsActive" class="form-check-label fs-6 fw-semibold">Active</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">Save Card</button>
+                        <a asp-action="FeatureCards" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

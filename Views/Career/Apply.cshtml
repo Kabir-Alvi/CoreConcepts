@@ -1,0 +1,82 @@
+@model CoreConcepts.Models.CareerApplyViewModel
+@{
+    ViewData["Title"] = "Apply for " + Model.JobTitle;
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="bg-primary text-white p-4 p-md-5">
+                    <span class="badge bg-light text-primary mb-2">Job Application</span>
+                    <h2 class="fw-bold mb-1">@Model.JobTitle</h2>
+                    <p class="mb-0 text-white-50">Department: @Model.CategoryName &nbsp;|&nbsp; Type: @Model.JobType</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <div class="alert alert-info border-0 shadow-xs mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Please complete your candidate profile and attach your latest <strong>Resume / CV file</strong>. The HR team at CoreConcepts will review your application.
+                    </div>
+
+                    <form asp-action="Apply" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="JobOpeningId" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label asp-for="FullName" class="form-label fw-semibold"></label>
+                                <input asp-for="FullName" class="form-control form-control-lg" placeholder="e.g. John Doe" />
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-semibold"></label>
+                                <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-semibold"></label>
+                                <input asp-for="Phone" class="form-control" placeholder="+880 17XXXXXXXX" />
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="CoverNote" class="form-label fw-semibold"></label>
+                                <textarea asp-for="CoverNote" class="form-control" rows="3" placeholder="Paste your Portfolio, LinkedIn, GitHub link or write a brief note about why you are a good fit..."></textarea>
+                                <span asp-validation-for="CoverNote" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <label asp-for="CvFile" class="form-label fw-bold">
+                                        <i class="bi bi-file-earmark-arrow-up text-primary me-1"></i> Upload Your CV / Resume (Required)
+                                    </label>
+                                    <input asp-for="CvFile" type="file" class="form-control form-control-lg" accept=".pdf,.doc,.docx" />
+                                    <small class="text-muted d-block mt-1">Accepted formats: PDF, DOC, DOCX. Maximum file size: 5 MB.</small>
+                                    <span asp-validation-for="CvFile" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-4 d-flex justify-content-between align-items-center">
+                                <a asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">
+                                    Submit Application <i class="bi bi-check2-circle ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

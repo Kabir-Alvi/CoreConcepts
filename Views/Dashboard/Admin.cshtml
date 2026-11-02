@@ -1,8 +1,188 @@
+@model IEnumerable<CoreConcepts.Models.JobApplication>
 @{
-    ViewData["Title"] = "Admin dashboard";
+    ViewData["Title"] = "Admin Overview Dashboard";
 }
 
-<div class="p-5 mb-4 bg-light rounded-3">
-    <h1>Admin dashboard</h1>
-    <p class="lead">Welcome, @User.Identity?.Name. This area is available only to Administrators.</p>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge bg-danger mb-1">Administrator Access</span>
+            <h2 class="fw-bold mb-0">CoreConcepts (CC) Portal Management</h2>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Admin" asp-action="CreateJob" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Post Vacancy
+            </a>
+            <a asp-controller="Admin" asp-action="CreateProject" class="btn btn-outline-dark">
+                <i class="bi bi-plus-circle me-1"></i> Add Project
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stat Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4 bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-white-50 text-uppercase fw-bold">Hero Banners</small>
+                        <h2 class="fw-bold my-1">@ViewBag.TotalBanners</h2>
+                        <a asp-controller="Admin" asp-action="Banners" class="text-white text-decoration-none small">Manage Banners &rarr;</a>
+                    </div>
+                    <i class="bi bi-images display-5 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4 bg-dark text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-white-50 text-uppercase fw-bold">Showcase Projects</small>
+                        <h2 class="fw-bold my-1">@ViewBag.TotalProjects</h2>
+                        <a asp-controller="Admin" asp-action="Projects" class="text-white text-decoration-none small">Manage Projects &rarr;</a>
+                    </div>
+                    <i class="bi bi-folder-check display-5 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4 bg-success text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-white-50 text-uppercase fw-bold">Active Jobs</small>
+                        <h2 class="fw-bold my-1">@ViewBag.TotalJobs</h2>
+                        <a asp-controller="Admin" asp-action="Jobs" class="text-white text-decoration-none small">Manage Openings &rarr;</a>
+                    </div>
+                    <i class="bi bi-briefcase display-5 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 rounded-4 bg-info text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-white-50 text-uppercase fw-bold">Applications & CVs</small>
+                        <h2 class="fw-bold my-1">@ViewBag.TotalApplications</h2>
+                        <a asp-controller="Admin" asp-action="Applications" class="text-white text-decoration-none small">Review CVs &rarr;</a>
+                    </div>
+                    <i class="bi bi-file-earmark-person display-5 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Panels -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-window-dock text-primary me-2"></i>Frontend CMS</h5>
+                <p class="text-muted small">Update your landing page banners and service showcase cards dynamically.</p>
+                <div class="d-flex flex-column gap-2 mt-auto">
+                    <a asp-controller="Admin" asp-action="Banners" class="btn btn-outline-primary btn-sm text-start">
+                        <i class="bi bi-card-image me-2"></i> Hero Carousel Banners
+                    </a>
+                    <a asp-controller="Admin" asp-action="FeatureCards" class="btn btn-outline-secondary btn-sm text-start">
+                        <i class="bi bi-grid me-2"></i> Feature / Service Cards
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-kanban text-success me-2"></i>Projects & Showcase</h5>
+                <p class="text-muted small">Add, update, or feature running and completed software & graphics projects.</p>
+                <div class="d-flex flex-column gap-2 mt-auto">
+                    <a asp-controller="Admin" asp-action="Projects" class="btn btn-outline-success btn-sm text-start">
+                        <i class="bi bi-list-task me-2"></i> All Projects List
+                    </a>
+                    <a asp-controller="Admin" asp-action="CreateProject" class="btn btn-success btn-sm text-start text-white">
+                        <i class="bi bi-plus-lg me-2"></i> Add New Project
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-people text-info me-2"></i>Career & Talent Acquisition</h5>
+                <p class="text-muted small">Post internships (Software, Graphics, QA) and download candidate CVs.</p>
+                <div class="d-flex flex-column gap-2 mt-auto">
+                    <a asp-controller="Admin" asp-action="Applications" class="btn btn-info btn-sm text-start text-white">
+                        <i class="bi bi-file-earmark-arrow-down me-2"></i> Received Applications & CVs
+                    </a>
+                    <a asp-controller="Admin" asp-action="Jobs" class="btn btn-outline-info btn-sm text-start">
+                        <i class="bi bi-briefcase me-2"></i> Job / Internship Postings
+                    </a>
+                    <a asp-controller="Admin" asp-action="Categories" class="btn btn-outline-secondary btn-sm text-start">
+                        <i class="bi bi-tags me-2"></i> Career Categories
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Candidate Applications Table -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0">Recent Candidate Applications</h5>
+            <a asp-controller="Admin" asp-action="Applications" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="card-body p-0">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Candidate Name</th>
+                                <th>Position Applied</th>
+                                <th>Contact Email & Phone</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Resume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var app in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold">@app.FullName</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">@app.JobOpening?.Title</span>
+                                    </td>
+                                    <td>
+                                        <div><i class="bi bi-envelope small"></i> @app.Email</div>
+                                        <div class="small text-muted"><i class="bi bi-telephone small"></i> @app.Phone</div>
+                                    </td>
+                                    <td>@app.AppliedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <span class="badge @(app.Status == "Shortlisted" ? "bg-success" : app.Status == "Reviewed" ? "bg-info text-dark" : app.Status == "Rejected" ? "bg-danger" : "bg-warning text-dark")">
+                                            @app.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a href="@app.CvFilePath" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download"></i> View CV
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4 text-muted">
+                    No applications received yet.
+                </div>
+            }
+        </div>
+    </div>
 </div>

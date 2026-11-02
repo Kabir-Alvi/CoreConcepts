@@ -1,0 +1,108 @@
+@model IEnumerable<CoreConcepts.Models.CompanyProject>
+@{
+    ViewData["Title"] = "Our Projects & Software Showcase";
+    var categories = ViewBag.Categories as List<string> ?? new List<string>();
+}
+
+<div class="bg-dark text-white py-5 mb-5">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">Projects Showcase</h1>
+        <p class="lead text-light opacity-75 mx-auto" style="max-width: 650px;">
+            Explore our enterprise software architectures, creative digital designs, and running applications built by CoreConcepts.
+        </p>
+    </div>
+</div>
+
+<div class="container mb-5">
+
+    <!-- Search & Filter Bar -->
+    <div class="card border-0 shadow-sm p-3 mb-4 rounded-3">
+        <form method="get" asp-action="Index" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by title, description or tech..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="category" class="form-select">
+                    <option value="All">All Categories</option>
+                    @foreach (var cat in categories)
+                    {
+                        <option value="@cat" selected="@(ViewBag.SelectedCategory == cat ? "selected" : null)">@cat</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select">
+                    <option value="All">All Statuses</option>
+                    <option value="Running" selected="@(ViewBag.SelectedStatus == "Running" ? "selected" : null)">Running</option>
+                    <option value="Completed" selected="@(ViewBag.SelectedStatus == "Completed" ? "selected" : null)">Completed</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                <a asp-action="Index" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-clockwise"></i></a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var project in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm feature-card overflow-hidden">
+                        @if (!string.IsNullOrEmpty(project.ImagePath))
+                        {
+                            <img src="@project.ImagePath" class="card-img-top" alt="@project.Title" style="height: 220px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 220px;">
+                                <i class="bi bi-folder-check display-3 opacity-50"></i>
+                            </div>
+                        }
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge badge-soft-primary px-2 py-1">@project.Category</span>
+                                <span class="badge @(project.Status == "Completed" ? "bg-success" : "bg-warning text-dark")">@project.Status</span>
+                            </div>
+                            <h5 class="fw-bold mb-2">@project.Title</h5>
+                            <p class="text-muted small flex-grow-1">@project.Description</p>
+                            @if (!string.IsNullOrEmpty(project.Technologies))
+                            {
+                                <div class="mb-3">
+                                    <small class="text-muted fw-bold">Stack:</small>
+                                    <span class="badge bg-light text-dark border">@project.Technologies</span>
+                                </div>
+                            }
+                            <div class="d-flex gap-2 mt-auto pt-3 border-top">
+                                <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                    Details
+                                </a>
+                                @if (!string.IsNullOrEmpty(project.ProjectUrl))
+                                {
+                                    <a href="@project.ProjectUrl" target="_blank" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-box-arrow-up-right"></i> Live
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h4 class="mt-3 text-muted">No projects found matching the criteria.</h4>
+                <a asp-action="Index" class="btn btn-outline-primary mt-2">View All Projects</a>
+            </div>
+        }
+    </div>
+
+</div>

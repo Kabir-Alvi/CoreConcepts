@@ -1,0 +1,69 @@
+@{
+    ViewData["Title"] = "Contact CoreConcepts (CC)";
+}
+
+<div class="bg-dark text-white py-5 mb-5">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">Get In Touch</h1>
+        <p class="lead text-light opacity-75 mx-auto" style="max-width: 600px;">
+            Have a project in mind or want to join our talent network? We'd love to hear from you.
+        </p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <h3 class="fw-bold mb-4">Send Us a Message</h3>
+            <form onsubmit="alert('Thank you! Your message has been received.'); return false;">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Your Name</label>
+                    <input type="text" class="form-control form-control-lg" required placeholder="John Doe" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Your Email</label>
+                    <input type="email" class="form-control form-control-lg" required placeholder="name@example.com" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Subject</label>
+                    <input type="text" class="form-control form-control-lg" required placeholder="Project inquiry or Career interest" />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Message</label>
+                    <textarea class="form-control form-control-lg" rows="4" required placeholder="Tell us about your requirements..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">Send Message</button>
+            </form>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-light">
+                <h4 class="fw-bold mb-4">Contact Information</h4>
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="btn btn-primary btn-sm rounded-circle p-2"><i class="bi bi-geo-alt fs-5"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Office Location</h6>
+                            <p class="text-muted mb-0">Banani Commercial Area, Road 11, Dhaka 1213, Bangladesh</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="btn btn-primary btn-sm rounded-circle p-2"><i class="bi bi-envelope fs-5"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Email Us</h6>
+                            <p class="text-muted mb-0">contact@coreconcepts.com</p>
+                            <p class="text-muted mb-0">career@coreconcepts.com</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="btn btn-primary btn-sm rounded-circle p-2"><i class="bi bi-telephone fs-5"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Call Us</h6>
+                            <p class="text-muted mb-0">+880 1700-000000 (Sun-Thu, 9am - 6pm)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
