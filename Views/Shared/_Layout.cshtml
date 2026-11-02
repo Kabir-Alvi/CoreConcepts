@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,16 +23,16 @@
 <body class="d-flex flex-column min-vh-100">
 
     <!-- Top Notification Bar -->
-    <div class="bg-dark text-white py-1 px-3 d-none d-md-block" style="font-size: 0.85rem;">
+    <div class="py-2 px-3 d-none d-md-block" style="background-color: #0b0f19; border-bottom: 1px solid #1e293b; font-size: 0.85rem;">
         <div class="container d-flex justify-content-between align-items-center">
-            <div>
-                <i class="bi bi-geo-alt-fill text-primary me-1"></i> @settings.OfficeAddress &nbsp;|&nbsp; 
-                <i class="bi bi-envelope-fill text-primary me-1"></i> @settings.CareerEmail
+            <div class="text-light opacity-90">
+                <i class="bi bi-geo-alt-fill text-info me-1"></i> @settings.OfficeAddress &nbsp;|&nbsp; 
+                <i class="bi bi-envelope-fill text-info me-1"></i> @settings.CareerEmail
             </div>
             <div>
-                <span class="badge bg-success me-2">We Are Hiring!</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-2 px-2 py-1">We Are Hiring!</span>
                 <a asp-controller="Career" asp-action="Index" class="text-white text-decoration-none fw-semibold">
-                    Explore Internships & Jobs <i class="bi bi-arrow-right"></i>
+                    Explore Internships & Jobs <i class="bi bi-arrow-right text-info"></i>
                 </a>
             </div>
         </div>
@@ -43,7 +43,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center fw-bold fs-4 text-white" asp-controller="Home" asp-action="Index">
-                    <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5">@settings.CompanyShortName</span>
+                    <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5 shadow-sm">@settings.CompanyShortName</span>
                     <span>@settings.CompanyName</span>
                 </a>
                 
@@ -84,7 +84,7 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item me-2">
-                                    <a class="btn btn-outline-warning btn-sm" asp-controller="Dashboard" asp-action="Admin">
+                                    <a class="btn btn-warning btn-sm fw-semibold shadow-xs" asp-controller="Dashboard" asp-action="Admin">
                                         <i class="bi bi-speedometer2 me-1"></i> Admin Panel
                                     </a>
                                 </li>
@@ -92,7 +92,7 @@
                             else
                             {
                                 <li class="nav-item me-2">
-                                    <a class="btn btn-outline-info btn-sm" asp-controller="Dashboard" asp-action="User">
+                                    <a class="btn btn-outline-light btn-sm" asp-controller="Dashboard" asp-action="User">
                                         <i class="bi bi-person-badge me-1"></i> My Applications
                                     </a>
                                 </li>
@@ -100,9 +100,9 @@
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-white fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-person-circle me-1"></i> @User.Identity.Name
+                                    <i class="bi bi-person-circle me-1 text-info"></i> @User.Identity.Name
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Admin"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
@@ -169,108 +169,112 @@
             </div>
         </div>
     }
-    @if (TempData["InfoMessage"] != null)
-    {
-        <div class="container mt-3">
-            <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
-                <i class="bi bi-info-circle-fill me-2"></i>
-                @TempData["InfoMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    }
 
-    <!-- Main Dynamic Body -->
+    <!-- Main Content -->
     <main role="main" class="flex-grow-1">
         @RenderBody()
     </main>
 
-    <!-- Dynamic Footer Controlled by Admin -->
-    <footer class="bg-dark text-white pt-5 pb-3 mt-auto border-top border-secondary position-relative">
+    <!-- ======================================================== -->
+    <!-- HIGH-CONTRAST PREMIUM FOOTER (100% Readable & Styled)   -->
+    <!-- ======================================================== -->
+    <footer class="bg-dark text-white pt-5 pb-4 mt-auto">
         @if (User.IsInRole("Admin"))
         {
-            <div class="container mb-3 text-end">
-                <a asp-controller="Admin" asp-action="Settings" class="btn btn-warning btn-sm shadow-sm">
-                    <i class="bi bi-pencil-square me-1"></i> Edit Footer & Site Details (Admin)
+            <div class="container mb-4 text-end">
+                <a asp-controller="Admin" asp-action="Settings" class="btn btn-warning btn-sm shadow-sm fw-semibold">
+                    <i class="bi bi-pencil-square me-1"></i> Edit Footer Details (Admin)
                 </a>
             </div>
         }
 
         <div class="container">
-            <div class="row g-4">
-                <!-- Company Info -->
+            <div class="row g-5">
+                <!-- 1. Company Brand & Bio -->
                 <div class="col-lg-4 col-md-6">
                     <div class="d-flex align-items-center mb-3">
-                        <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5">@settings.CompanyShortName</span>
+                        <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5 shadow-sm">@settings.CompanyShortName</span>
                         <h4 class="fw-bold mb-0 text-white">@settings.CompanyName</h4>
                     </div>
-                    <p class="text-muted" style="line-height: 1.6;">
+                    <p class="footer-bio-text mb-4">
                         @settings.FooterAboutText
                     </p>
                     <div class="d-flex gap-2">
                         @if (!string.IsNullOrEmpty(settings.FacebookUrl))
                         {
-                            <a href="@settings.FacebookUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                            <a href="@settings.FacebookUrl" target="_blank" class="footer-social-btn" title="Facebook"><i class="bi bi-facebook"></i></a>
                         }
                         @if (!string.IsNullOrEmpty(settings.LinkedInUrl))
                         {
-                            <a href="@settings.LinkedInUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-linkedin"></i></a>
+                            <a href="@settings.LinkedInUrl" target="_blank" class="footer-social-btn" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
                         }
                         @if (!string.IsNullOrEmpty(settings.GitHubUrl))
                         {
-                            <a href="@settings.GitHubUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-github"></i></a>
+                            <a href="@settings.GitHubUrl" target="_blank" class="footer-social-btn" title="GitHub"><i class="bi bi-github"></i></a>
                         }
                         @if (!string.IsNullOrEmpty(settings.TwitterUrl))
                         {
-                            <a href="@settings.TwitterUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-twitter-x"></i></a>
+                            <a href="@settings.TwitterUrl" target="_blank" class="footer-social-btn" title="X / Twitter"><i class="bi bi-twitter-x"></i></a>
                         }
                     </div>
                 </div>
 
-                <!-- Quick Links -->
+                <!-- 2. Company Quick Links -->
                 <div class="col-lg-2 col-md-6">
-                    <h5 class="fw-bold text-white mb-3">Company</h5>
-                    <ul class="list-unstyled text-muted d-flex flex-column gap-2">
-                        <li><a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none hover-link">Home</a></li>
-                        <li><a asp-controller="Home" asp-action="About" class="text-muted text-decoration-none hover-link">About CC</a></li>
-                        <li><a asp-controller="Projects" asp-action="Index" class="text-muted text-decoration-none hover-link">Our Projects</a></li>
-                        <li><a asp-controller="Career" asp-action="Index" class="text-muted text-decoration-none hover-link">Careers & Jobs</a></li>
-                        <li><a asp-controller="Home" asp-action="Contact" class="text-muted text-decoration-none hover-link">Contact Us</a></li>
+                    <h5 class="fw-bold mb-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Company</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                        <li><a asp-controller="Home" asp-action="Index" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Home</a></li>
+                        <li><a asp-controller="Home" asp-action="About" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> About CC</a></li>
+                        <li><a asp-controller="Projects" asp-action="Index" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Projects</a></li>
+                        <li><a asp-controller="Career" asp-action="Index" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Careers</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Contact Us</a></li>
                     </ul>
                 </div>
 
-                <!-- Career Opportunities -->
+                <!-- 3. Opportunities -->
                 <div class="col-lg-3 col-md-6">
-                    <h5 class="fw-bold text-white mb-3">Opportunities</h5>
-                    <ul class="list-unstyled text-muted d-flex flex-column gap-2">
-                        <li><a asp-controller="Career" asp-action="Index" asp-route-type="Internship" class="text-muted text-decoration-none hover-link">Software Developer Intern</a></li>
-                        <li><a asp-controller="Career" asp-action="Index" asp-route-type="Internship" class="text-muted text-decoration-none hover-link">Graphics & UI/UX Intern</a></li>
-                        <li><a asp-controller="Career" asp-action="Index" class="text-muted text-decoration-none hover-link">Full-Time Positions</a></li>
-                        <li><a asp-controller="Account" asp-action="Register" class="text-muted text-decoration-none hover-link">Join Our Talent Pool</a></li>
+                    <h5 class="fw-bold mb-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Opportunities</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                        <li><a asp-controller="Career" asp-action="Index" asp-route-type="Internship" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Software Developer Intern</a></li>
+                        <li><a asp-controller="Career" asp-action="Index" asp-route-type="Internship" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Graphics & UI/UX Intern</a></li>
+                        <li><a asp-controller="Career" asp-action="Index" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Full-Time Openings</a></li>
+                        <li><a asp-controller="Account" asp-action="Register" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Join Talent Network</a></li>
                     </ul>
                 </div>
 
-                <!-- Contact & Headquarters -->
+                <!-- 4. Headquarters Info -->
                 <div class="col-lg-3 col-md-6">
-                    <h5 class="fw-bold text-white mb-3">Headquarters</h5>
-                    <ul class="list-unstyled text-muted d-flex flex-column gap-2">
-                        <li><i class="bi bi-geo-alt text-primary me-2"></i> @settings.OfficeAddress</li>
-                        <li><i class="bi bi-telephone text-primary me-2"></i> @settings.ContactPhone</li>
-                        <li><i class="bi bi-envelope text-primary me-2"></i> @settings.ContactEmail</li>
-                        <li><i class="bi bi-clock text-primary me-2"></i> @settings.OfficeHours</li>
+                    <h5 class="fw-bold mb-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Headquarters</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                        <li class="footer-contact-item">
+                            <i class="bi bi-geo-alt-fill footer-contact-icon"></i>
+                            <span>@settings.OfficeAddress</span>
+                        </li>
+                        <li class="footer-contact-item">
+                            <i class="bi bi-telephone-fill footer-contact-icon"></i>
+                            <span>@settings.ContactPhone</span>
+                        </li>
+                        <li class="footer-contact-item">
+                            <i class="bi bi-envelope-fill footer-contact-icon"></i>
+                            <span>@settings.ContactEmail</span>
+                        </li>
+                        <li class="footer-contact-item">
+                            <i class="bi bi-clock-fill footer-contact-icon"></i>
+                            <span>@settings.OfficeHours</span>
+                        </li>
                     </ul>
                 </div>
             </div>
 
-            <hr class="border-secondary my-4">
+            <hr class="my-4" style="border-color: #1e293b;">
 
             <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-start text-muted" style="font-size: 0.9rem;">
+                <div class="col-md-6 text-center text-md-start" style="color: #94a3b8; font-size: 0.9rem;">
                     &copy; @DateTime.UtcNow.Year <span class="fw-bold text-white">@settings.CompanyName (@settings.CompanyShortName)</span>. All rights reserved.
                 </div>
-                <div class="col-md-6 text-center text-md-end text-muted mt-2 mt-md-0" style="font-size: 0.9rem;">
-                    <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none me-3">Privacy Policy</a>
-                    <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0" style="font-size: 0.9rem;">
+                    <a asp-controller="Home" asp-action="Privacy" class="footer-link me-3">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
                 </div>
             </div>
         </div>
