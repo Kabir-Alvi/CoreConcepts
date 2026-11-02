@@ -6,7 +6,18 @@
 <!-- Dynamic Hero Carousel / Banner Section -->
 @if (Model.Banners != null && Model.Banners.Any())
 {
-    <div id="heroCarousel" class="carousel slide carousel-fade mb-5 shadow-sm" data-bs-ride="carousel">
+    <div id="heroCarousel" class="carousel slide carousel-fade mb-5 shadow position-relative" data-bs-ride="carousel">
+        
+        <!-- Admin Quick Floating Control -->
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="position-absolute top-0 end-0 m-3 z-3">
+                <a asp-controller="Admin" asp-action="Banners" class="btn btn-warning btn-sm shadow-sm fw-semibold">
+                    <i class="bi bi-pencil-square me-1"></i> Edit Banners (Admin)
+                </a>
+            </div>
+        }
+
         @if (Model.Banners.Count > 1)
         {
             <div class="carousel-indicators">
@@ -16,31 +27,38 @@
                 }
             </div>
         }
+
         <div class="carousel-inner">
             @for (int i = 0; i < Model.Banners.Count; i++)
             {
                 var banner = Model.Banners[i];
                 <div class="carousel-item @(i == 0 ? "active" : "") hero-slider-item d-flex align-items-center"
-                     style="@(!string.IsNullOrEmpty(banner.ImagePath) ? $"background: linear-gradient(rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.85)), url('{banner.ImagePath}') center/cover no-repeat;" : "")">
-                    <div class="container py-5 text-white">
+                     style="@(!string.IsNullOrEmpty(banner.ImagePath) ? $"background: linear-gradient(rgba(9, 13, 22, 0.85), rgba(9, 13, 22, 0.9)), url('{banner.ImagePath}') center/cover no-repeat !important;" : "")">
+                    
+                    <div class="container py-5 position-relative z-2">
                         <div class="row align-items-center">
-                            <div class="col-lg-8 col-md-10 py-5">
-                                <span class="badge bg-primary px-3 py-2 text-uppercase letter-spacing-1 rounded-pill mb-3">
-                                    <i class="bi bi-stars me-1"></i> CoreConcepts Innovation
+                            <div class="col-lg-9 col-md-11 py-5">
+                                <span class="badge hero-badge px-3 py-2 text-uppercase rounded-pill mb-3">
+                                    <i class="bi bi-stars me-1 text-warning"></i> CoreConcepts Innovation
                                 </span>
-                                <h1 class="display-4 fw-bold lh-sm mb-3">@banner.Title</h1>
-                                <p class="lead text-light mb-4" style="max-width: 650px; font-weight: 300;">
+                                
+                                <h1 class="display-4 hero-title mb-4">
+                                    @banner.Title
+                                </h1>
+                                
+                                <p class="hero-subtitle mb-5" style="max-width: 720px;">
                                     @banner.Subtitle
                                 </p>
+                                
                                 <div class="d-flex flex-wrap gap-3">
                                     @if (!string.IsNullOrEmpty(banner.ButtonText) && !string.IsNullOrEmpty(banner.ButtonUrl))
                                     {
-                                        <a href="@banner.ButtonUrl" class="btn btn-primary btn-lg px-4 shadow">
+                                        <a href="@banner.ButtonUrl" class="btn btn-primary btn-lg">
                                             @banner.ButtonText <i class="bi bi-arrow-right ms-2"></i>
                                         </a>
                                     }
-                                    <a asp-controller="Home" asp-action="About" class="btn btn-outline-light btn-lg px-4">
-                                        Learn More
+                                    <a asp-controller="Home" asp-action="About" class="btn btn-outline-light btn-lg">
+                                        Learn More About CC
                                     </a>
                                 </div>
                             </div>
@@ -49,6 +67,7 @@
                 </div>
             }
         </div>
+
         @if (Model.Banners.Count > 1)
         {
             <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
@@ -67,9 +86,9 @@
     
     <!-- Dynamic Feature / Service Cards Section -->
     <div class="text-center mb-5">
-        <h6 class="text-primary fw-bold text-uppercase">What We Do & Offer</h6>
-        <h2 class="fw-bold">Enterprise Capabilities & Talent Growth</h2>
-        <p class="text-muted mx-auto" style="max-width: 600px;">
+        <h6 class="text-primary fw-bold text-uppercase" style="letter-spacing: 0.05em;">What We Do & Offer</h6>
+        <h2 class="fw-bold" style="font-size: 2.3rem;">Enterprise Capabilities & Talent Growth</h2>
+        <p class="text-muted mx-auto" style="max-width: 650px; font-size: 1.1rem;">
             At CoreConcepts (CC), we bridge cutting-edge technology with high-caliber talents across software, graphics, and cloud architecture.
         </p>
     </div>
@@ -82,7 +101,7 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="card h-100 border-0 shadow-sm feature-card p-4">
                         <div class="card-body d-flex flex-column p-0">
-                            <div class="card-icon-box bg-light text-primary mb-3 shadow-xs">
+                            <div class="card-icon-box mb-3 shadow-xs">
                                 <i class="bi @(string.IsNullOrEmpty(card.IconClass) ? "bi-layers" : card.IconClass)"></i>
                             </div>
                             <h5 class="fw-bold mb-2">@card.Title</h5>
@@ -103,7 +122,7 @@
     <!-- Dynamic Featured Projects Section -->
     <div class="d-flex justify-content-between align-items-end mb-4 pt-4 border-top">
         <div>
-            <h6 class="text-primary fw-bold text-uppercase">Portfolio</h6>
+            <h6 class="text-primary fw-bold text-uppercase" style="letter-spacing: 0.05em;">Portfolio</h6>
             <h2 class="fw-bold mb-0">Featured Client & Internal Projects</h2>
         </div>
         <a asp-controller="Projects" asp-action="Index" class="btn btn-outline-primary">
@@ -155,7 +174,7 @@
     }
 
     <!-- Dynamic Career & Internship Highlight Section -->
-    <div class="bg-light rounded-4 p-4 p-md-5 my-5 border shadow-sm">
+    <div class="bg-white rounded-4 p-4 p-md-5 my-5 border shadow-sm">
         <div class="row align-items-center mb-4">
             <div class="col-md-8">
                 <span class="badge bg-success mb-2 px-3 py-2">Join CoreConcepts (CC) Team</span>
@@ -173,7 +192,7 @@
             @foreach (var job in Model.LatestJobs)
             {
                 <div class="col-lg-6">
-                    <div class="card border-0 shadow-xs h-100 p-3 bg-white rounded-3">
+                    <div class="card border border-light-subtle shadow-xs h-100 p-3 bg-light rounded-3">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <span class="badge bg-primary-subtle text-primary mb-1">@job.JobCategory?.Name</span>
