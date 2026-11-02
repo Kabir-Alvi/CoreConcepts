@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>@ViewData["Title"] - @settings.CompanyName (@settings.CompanyShortName)</title>
     
     <!-- Bootstrap 5 CSS -->
@@ -16,9 +16,49 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- Google Translate Script (For Dynamic Full Site Translation) -->
+    <style>
+        /* Hide default ugly google translate banner */
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon, .goog-te-gadget-simple span {
+            display: none !important;
+        }
+        body {
+            top: 0px !important;
+        }
+        .goog-te-gadget {
+            font-size: 0px !important;
+        }
+        .goog-te-gadget .goog-te-combo {
+            margin: 0 !important;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #111827;
+            color: #ffffff;
+            border: 1px solid #374151;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .lang-btn {
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .lang-btn:hover, .lang-btn.active {
+            background: #4f46e5;
+            color: #ffffff;
+            border-color: #4f46e5;
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -29,11 +69,20 @@
                 <i class="bi bi-geo-alt-fill text-info me-1"></i> @settings.OfficeAddress &nbsp;|&nbsp; 
                 <i class="bi bi-envelope-fill text-info me-1"></i> @settings.CareerEmail
             </div>
-            <div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle me-2 px-2 py-1">We Are Hiring!</span>
-                <a asp-controller="Career" asp-action="Index" class="text-white text-decoration-none fw-semibold">
-                    Explore Internships & Jobs <i class="bi bi-arrow-right text-info"></i>
-                </a>
+            <div class="d-flex align-items-center gap-3">
+                <!-- English / Bangla Toggle -->
+                <div class="d-flex align-items-center gap-1">
+                    <i class="bi bi-translate text-info me-1"></i>
+                    <button type="button" class="lang-btn" onclick="translateLanguage('en')">EN</button>
+                    <button type="button" class="lang-btn" onclick="translateLanguage('bn')">বাংলা</button>
+                </div>
+
+                <div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle me-2 px-2 py-1">We Are Hiring!</span>
+                    <a asp-controller="Career" asp-action="Index" class="text-white text-decoration-none fw-semibold">
+                        Explore Internships & Jobs <i class="bi bi-arrow-right text-info"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -47,10 +96,15 @@
                     <span>@settings.CompanyName</span>
                 </a>
                 
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <!-- Mobile Language + Toggle Button -->
+                <div class="d-flex align-items-center d-lg-none gap-2">
+                    <button type="button" class="lang-btn" onclick="translateLanguage('bn')">বাং</button>
+                    <button type="button" class="lang-btn" onclick="translateLanguage('en')">EN</button>
+                    <button class="navbar-toggler border-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
 
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
@@ -83,7 +137,7 @@
                         {
                             @if (User.IsInRole("Admin"))
                             {
-                                <li class="nav-item me-2">
+                                <li class="nav-item me-2 my-1 my-lg-0">
                                     <a class="btn btn-warning btn-sm fw-semibold shadow-xs" asp-controller="Dashboard" asp-action="Admin">
                                         <i class="bi bi-speedometer2 me-1"></i> Admin Panel
                                     </a>
@@ -91,14 +145,14 @@
                             }
                             else
                             {
-                                <li class="nav-item me-2">
+                                <li class="nav-item me-2 my-1 my-lg-0">
                                     <a class="btn btn-outline-light btn-sm" asp-controller="Dashboard" asp-action="User">
                                         <i class="bi bi-person-badge me-1"></i> My Applications
                                     </a>
                                 </li>
                             }
 
-                            <li class="nav-item dropdown">
+                            <li class="nav-item dropdown my-1 my-lg-0">
                                 <a class="nav-link dropdown-toggle text-white fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                                     <i class="bi bi-person-circle me-1 text-info"></i> @User.Identity.Name
                                 </a>
@@ -131,12 +185,12 @@
                         }
                         else
                         {
-                            <li class="nav-item me-2">
+                            <li class="nav-item me-2 my-1 my-lg-0">
                                 <a class="btn btn-outline-light btn-sm px-3" asp-controller="Account" asp-action="Login">
                                     <i class="bi bi-box-arrow-in-right me-1"></i> Log In
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item my-1 my-lg-0">
                                 <a class="btn btn-primary btn-sm px-3 shadow-sm" asp-controller="Account" asp-action="Register">
                                     <i class="bi bi-person-plus me-1"></i> Register
                                 </a>
@@ -175,8 +229,11 @@
         @RenderBody()
     </main>
 
+    <!-- Hidden element for Translation Hook -->
+    <div id="google_translate_element" style="display:none;"></div>
+
     <!-- ======================================================== -->
-    <!-- HIGH-CONTRAST PREMIUM FOOTER (100% Readable & Styled)   -->
+    <!-- HIGH-CONTRAST PREMIUM FOOTER                             -->
     <!-- ======================================================== -->
     <footer class="bg-dark text-white pt-5 pb-4 mt-auto">
         @if (User.IsInRole("Admin"))
@@ -189,7 +246,7 @@
         }
 
         <div class="container">
-            <div class="row g-5">
+            <div class="row g-4 g-lg-5">
                 <!-- 1. Company Brand & Bio -->
                 <div class="col-lg-4 col-md-6">
                     <div class="d-flex align-items-center mb-3">
@@ -220,9 +277,9 @@
                 </div>
 
                 <!-- 2. Company Quick Links -->
-                <div class="col-lg-2 col-md-6">
-                    <h5 class="fw-bold mb-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Company</h5>
-                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                <div class="col-lg-2 col-md-6 col-6">
+                    <h5 class="fw-bold mb-3 mb-md-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Company</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2 gap-md-3 mb-0">
                         <li><a asp-controller="Home" asp-action="Index" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Home</a></li>
                         <li><a asp-controller="Home" asp-action="About" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> About CC</a></li>
                         <li><a asp-controller="Projects" asp-action="Index" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Projects</a></li>
@@ -232,9 +289,9 @@
                 </div>
 
                 <!-- 3. Opportunities -->
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="fw-bold mb-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Opportunities</h5>
-                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                <div class="col-lg-3 col-md-6 col-6">
+                    <h5 class="fw-bold mb-3 mb-md-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Opportunities</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2 gap-md-3 mb-0">
                         <li><a asp-controller="Career" asp-action="Index" asp-route-type="Internship" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Software Developer Intern</a></li>
                         <li><a asp-controller="Career" asp-action="Index" asp-route-type="Internship" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Graphics & UI/UX Intern</a></li>
                         <li><a asp-controller="Career" asp-action="Index" class="footer-link"><i class="bi bi-chevron-right small me-1"></i> Full-Time Openings</a></li>
@@ -244,8 +301,8 @@
 
                 <!-- 4. Headquarters Info -->
                 <div class="col-lg-3 col-md-6">
-                    <h5 class="fw-bold mb-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Headquarters</h5>
-                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                    <h5 class="fw-bold mb-3 mb-md-4 text-white border-bottom border-secondary pb-2" style="font-size: 1.15rem;">Headquarters</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2 gap-md-3 mb-0">
                         <li class="footer-contact-item">
                             <i class="bi bi-geo-alt-fill footer-contact-icon"></i>
                             <span>@settings.OfficeAddress</span>
@@ -284,6 +341,31 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Google Translator Engine Setup -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,bn',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function translateLanguage(lang) {
+            var selectField = document.querySelector(".goog-te-combo");
+            if (selectField) {
+                selectField.value = lang;
+                selectField.dispatchEvent(new Event('change'));
+            } else {
+                // Set cookie fallback for seamless reload
+                document.cookie = "googtrans=/en/" + lang + "; path=/;";
+                location.reload();
+            }
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
