@@ -4,7 +4,7 @@ namespace CoreConcepts.Models;
 
 public class SiteSettings
 {
-    public int Id { get; set; } = 1;
+    public int Id { get; set; } // Auto-increment by database
 
     // Company Branding & Summary (Footer & Top Bar)
     [Required, StringLength(100)]

@@ -11,7 +11,10 @@ public class SiteSettingsService(ApplicationDbContext context)
         var settings = await context.SiteSettings.FirstOrDefaultAsync();
         if (settings == null)
         {
-            settings = new SiteSettings();
+            settings = new SiteSettings
+            {
+                Id = 0 // Ensures EF Core treats it as a new entity for IDENTITY insert
+            };
             context.SiteSettings.Add(settings);
             await context.SaveChangesAsync();
         }
