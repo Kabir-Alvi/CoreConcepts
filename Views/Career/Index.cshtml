@@ -2,12 +2,13 @@
 @{
     ViewData["Title"] = "Career & Internships at CoreConcepts (CC)";
     var categories = ViewBag.Categories as List<CoreConcepts.Models.JobCategory> ?? new List<CoreConcepts.Models.JobCategory>();
+    int selectedCatId = ViewBag.SelectedCategoryId ?? 0;
 }
 
-<div class="bg-dark text-white py-5 mb-5">
+<div class="bg-dark text-white py-5 mb-5 position-relative" style="background: linear-gradient(135deg, #090d16 0%, #0f172a 100%) !important;">
     <div class="container text-center">
-        <span class="badge bg-primary px-3 py-2 text-uppercase mb-2">Build Your Future With Us</span>
-        <h1 class="display-5 fw-bold">Career & Internship Opportunities</h1>
+        <span class="badge hero-badge px-3 py-2 text-uppercase mb-2">Build Your Future With Us</span>
+        <h1 class="display-5 fw-bold text-white">Career & Internship Opportunities</h1>
         <p class="lead text-light opacity-75 mx-auto" style="max-width: 650px;">
             Join CoreConcepts to build scalable software, craft engaging visual designs, or embark on a mentorship-driven internship.
         </p>
@@ -16,35 +17,83 @@
 
 <div class="container mb-5">
 
-    <!-- Filters & Search -->
+    <!-- Admin Quick Actions Bar -->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="alert alert-warning d-flex justify-content-between align-items-center rounded-3 shadow-xs mb-4">
+            <div>
+                <i class="bi bi-shield-lock-fill me-2"></i>
+                <strong>Admin Mode:</strong> You can create vacancies, manage categories/departments, and review applicant CVs.
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-controller="Admin" asp-action="CreateJob" class="btn btn-primary btn-sm fw-semibold">
+                    <i class="bi bi-plus-lg me-1"></i> Post Vacancy
+                </a>
+                <a asp-controller="Admin" asp-action="Categories" class="btn btn-outline-dark btn-sm fw-semibold">
+                    <i class="bi bi-tags me-1"></i> Manage Departments
+                </a>
+                <a asp-controller="Admin" asp-action="Applications" class="btn btn-info btn-sm fw-semibold text-white">
+                    <i class="bi bi-file-earmark-person me-1"></i> View CVs
+                </a>
+            </div>
+        </div>
+    }
+
+    <!-- ======================================================== -->
+    <!-- DYNAMIC DEPARTMENT PILL TABS WITH LIVE JOB COUNTS        -->
+    <!-- ======================================================== -->
+    <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
+        <span class="fw-bold text-muted me-2"><i class="bi bi-funnel text-primary me-1"></i> Departments:</span>
+        
+        <a asp-action="Index" asp-route-categoryId="0" asp-route-type="@ViewBag.SelectedType" asp-route-search="@ViewBag.Search"
+           class="btn btn-sm @(selectedCatId == 0 ? "btn-primary" : "btn-light border") rounded-pill px-3 py-2 fw-semibold">
+            All Departments <span class="badge bg-white text-dark ms-1">@ViewBag.TotalActiveJobs</span>
+        </a>
+
+        @foreach (var cat in categories)
+        {
+            var activeCount = cat.JobOpenings.Count(j => j.IsActive);
+            <a asp-action="Index" asp-route-categoryId="@cat.Id" asp-route-type="@ViewBag.SelectedType" asp-route-search="@ViewBag.Search"
+               class="btn btn-sm @(selectedCatId == cat.Id ? "btn-primary" : "btn-light border") rounded-pill px-3 py-2 fw-semibold">
+                @cat.Name 
+                <span class="badge @(selectedCatId == cat.Id ? "bg-white text-primary" : "bg-secondary-subtle text-secondary") ms-1">
+                    @activeCount
+                </span>
+            </a>
+        }
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Admin" asp-action="Categories" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-2 border-dashed">
+                <i class="bi bi-plus-circle me-1"></i> Add Department
+            </a>
+        }
+    </div>
+
+    <!-- Filters & Search Bar -->
     <div class="card border-0 shadow-sm p-3 mb-4 rounded-3">
         <form method="get" asp-action="Index" class="row g-2 align-items-center">
-            <div class="col-md-5">
+            <input type="hidden" name="categoryId" value="@selectedCatId" />
+            
+            <div class="col-md-7">
                 <div class="input-group">
                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search job title or keyword..." />
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by role title, keywords, or skills..." />
                 </div>
             </div>
+            
             <div class="col-md-3">
-                <select name="categoryId" class="form-select">
-                    <option value="0">All Departments / Fields</option>
-                    @foreach (var cat in categories)
-                    {
-                        <option value="@cat.Id" selected="@(ViewBag.SelectedCategoryId == cat.Id ? "selected" : null)">@cat.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="col-md-2">
                 <select name="type" class="form-select">
-                    <option value="All">All Types</option>
+                    <option value="All">All Types (Intern / Full-Time)</option>
                     <option value="Internship" selected="@(ViewBag.SelectedType == "Internship" ? "selected" : null)">Internship</option>
                     <option value="Full-Time" selected="@(ViewBag.SelectedType == "Full-Time" ? "selected" : null)">Full-Time</option>
                     <option value="Part-Time" selected="@(ViewBag.SelectedType == "Part-Time" ? "selected" : null)">Part-Time</option>
                     <option value="Remote" selected="@(ViewBag.SelectedType == "Remote" ? "selected" : null)">Remote</option>
                 </select>
             </div>
+            
             <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
                 <a asp-action="Index" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-clockwise"></i></a>
             </div>
         </form>
@@ -57,22 +106,38 @@
             @foreach (var job in Model)
             {
                 <div class="col-12">
-                    <div class="card border-0 shadow-sm feature-card p-4 rounded-3 bg-white">
+                    <div class="card border-0 shadow-sm feature-card p-4 rounded-4 bg-white position-relative">
+                        
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="position-absolute top-0 end-0 m-3 d-flex gap-1">
+                                <a asp-controller="Admin" asp-action="EditJob" asp-route-id="@job.Id" class="btn btn-warning btn-sm py-0 px-2" style="font-size: 0.8rem;">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            </div>
+                        }
+
                         <div class="row align-items-center">
                             <div class="col-lg-8">
                                 <div class="d-flex flex-wrap gap-2 mb-2">
-                                    <span class="badge bg-primary-subtle text-primary fw-semibold px-2 py-1">@job.JobCategory?.Name</span>
-                                    <span class="badge @(job.Type == "Internship" ? "bg-success" : "bg-dark") px-2 py-1">@job.Type</span>
-                                    <span class="badge bg-light text-muted border px-2 py-1"><i class="bi bi-geo-alt me-1"></i> @job.Location</span>
+                                    <span class="badge bg-primary-subtle text-primary fw-semibold px-2 py-1">
+                                        <i class="bi bi-tag-fill me-1"></i> @job.JobCategory?.Name
+                                    </span>
+                                    <span class="badge @(job.Type == "Internship" ? "bg-success" : "bg-dark") px-2 py-1">
+                                        @job.Type
+                                    </span>
+                                    <span class="badge bg-light text-muted border px-2 py-1">
+                                        <i class="bi bi-geo-alt me-1 text-danger"></i> @job.Location
+                                    </span>
                                 </div>
                                 <h4 class="fw-bold mb-2">@job.Title</h4>
-                                <p class="text-muted mb-3" style="max-width: 700px;">
+                                <p class="text-muted mb-3" style="max-width: 720px; line-height: 1.6;">
                                     @(job.Description.Length > 160 ? job.Description.Substring(0, 160) + "..." : job.Description)
                                 </p>
-                                <div class="small text-muted">
+                                <div class="small text-muted d-flex flex-wrap gap-3">
                                     @if (!string.IsNullOrEmpty(job.SalaryOrStipend))
                                     {
-                                        <span class="me-3"><i class="bi bi-cash-coin me-1 text-success"></i> <strong>Stipend/Salary:</strong> @job.SalaryOrStipend</span>
+                                        <span><i class="bi bi-cash-coin me-1 text-success"></i> <strong>Stipend/Salary:</strong> @job.SalaryOrStipend</span>
                                     }
                                     @if (job.Deadline.HasValue)
                                     {
@@ -96,8 +161,8 @@
         else
         {
             <div class="col-12 text-center py-5">
-                <i class="bi bi-briefcase display-1 text-muted"></i>
-                <h4 class="mt-3 text-muted">No vacancies found matching your criteria.</h4>
+                <i class="bi bi-briefcase display-1 text-muted opacity-50"></i>
+                <h4 class="mt-3 text-muted">No vacancies found under this department.</h4>
                 <a asp-action="Index" class="btn btn-outline-primary mt-2">View All Openings</a>
             </div>
         }

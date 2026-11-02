@@ -37,7 +37,13 @@ public class CareerController(
 
         var jobs = await query.OrderByDescending(j => j.CreatedAt).ToListAsync();
 
-        ViewBag.Categories = await context.JobCategories.ToListAsync();
+        // Fetch categories with live job counts
+        var categories = await context.JobCategories
+            .Include(c => c.JobOpenings)
+            .ToListAsync();
+
+        ViewBag.Categories = categories;
+        ViewBag.TotalActiveJobs = await context.JobOpenings.CountAsync(j => j.IsActive);
         ViewBag.SelectedCategoryId = categoryId ?? 0;
         ViewBag.SelectedType = type ?? "All";
         ViewBag.Search = search;

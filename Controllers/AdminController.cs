@@ -500,12 +500,17 @@ public class AdminController(
     // ==========================================
     // RECEIVED APPLICATIONS & RESUMES
     // ==========================================
-    public async Task<IActionResult> Applications(int? jobId, string? status)
+    public async Task<IActionResult> Applications(int? jobId, int? categoryId, string? status)
     {
         var query = context.JobApplications
             .Include(a => a.JobOpening)
                 .ThenInclude(j => j!.JobCategory)
             .AsQueryable();
+
+        if (categoryId.HasValue && categoryId.Value > 0)
+        {
+            query = query.Where(a => a.JobOpening!.JobCategoryId == categoryId.Value);
+        }
 
         if (jobId.HasValue && jobId.Value > 0)
         {
@@ -520,7 +525,9 @@ public class AdminController(
         var applications = await query.OrderByDescending(a => a.AppliedAt).ToListAsync();
 
         ViewBag.Jobs = await context.JobOpenings.ToListAsync();
+        ViewBag.Categories = await context.JobCategories.ToListAsync();
         ViewBag.SelectedJobId = jobId ?? 0;
+        ViewBag.SelectedCategoryId = categoryId ?? 0;
         ViewBag.SelectedStatus = status ?? "All";
 
         return View(applications);

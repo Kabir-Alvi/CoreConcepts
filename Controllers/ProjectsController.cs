@@ -1,5 +1,6 @@
 using CoreConcepts.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreConcepts.Controllers;
@@ -30,7 +31,11 @@ public class ProjectsController(ApplicationDbContext context) : Controller
         ViewBag.SelectedCategory = category ?? "All";
         ViewBag.SelectedStatus = status ?? "All";
         ViewBag.Search = search;
-        ViewBag.Categories = await context.CompanyProjects.Select(p => p.Category).Distinct().ToListAsync();
+        
+        // Dynamic categories from JobCategories + existing project categories
+        var deptNames = await context.JobCategories.Select(c => c.Name).ToListAsync();
+        var projCategories = await context.CompanyProjects.Select(p => p.Category).Distinct().ToListAsync();
+        ViewBag.Categories = deptNames.Union(projCategories).Distinct().ToList();
 
         return View(projects);
     }
