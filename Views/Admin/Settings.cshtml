@@ -1,0 +1,104 @@
+@model CoreConcepts.Models.SiteSettings
+@{
+    ViewData["Title"] = "Site & Footer Settings CMS";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge bg-primary mb-1">Global CMS</span>
+            <h2 class="fw-bold mb-0">Website & Footer Settings</h2>
+            <p class="text-muted mb-0">Update Headquarters address, phone, emails, social links, and footer info.</p>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Admin" class="btn btn-outline-secondary">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                <form asp-action="Settings" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">
+                        <i class="bi bi-buildings me-2"></i> Company Branding & Summary
+                    </h4>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="CompanyName" class="form-label fw-semibold">Company Full Name</label>
+                            <input asp-for="CompanyName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CompanyShortName" class="form-label fw-semibold">Short Name (Badge)</label>
+                            <input asp-for="CompanyShortName" class="form-control" required />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="FooterAboutText" class="form-label fw-semibold">Footer About / Bio Text</label>
+                            <textarea asp-for="FooterAboutText" class="form-control" rows="3" required></textarea>
+                            <small class="text-muted">This text will appear in the main footer under the company logo.</small>
+                        </div>
+                    </div>
+
+                    <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">
+                        <i class="bi bi-geo-alt me-2"></i> Headquarters Contact Information
+                    </h4>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label asp-for="OfficeAddress" class="form-label fw-semibold">Office Address</label>
+                            <input asp-for="OfficeAddress" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ContactPhone" class="form-label fw-semibold">Phone Number</label>
+                            <input asp-for="ContactPhone" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="OfficeHours" class="form-label fw-semibold">Working Hours</label>
+                            <input asp-for="OfficeHours" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ContactEmail" class="form-label fw-semibold">General Contact Email</label>
+                            <input asp-for="ContactEmail" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CareerEmail" class="form-label fw-semibold">Career / HR Email</label>
+                            <input asp-for="CareerEmail" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">
+                        <i class="bi bi-share me-2"></i> Social Media Links
+                    </h4>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="FacebookUrl" class="form-label fw-semibold">Facebook URL</label>
+                            <input asp-for="FacebookUrl" class="form-control" placeholder="https://facebook.com/..." />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LinkedInUrl" class="form-label fw-semibold">LinkedIn URL</label>
+                            <input asp-for="LinkedInUrl" class="form-control" placeholder="https://linkedin.com/..." />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="GitHubUrl" class="form-label fw-semibold">GitHub URL</label>
+                            <input asp-for="GitHubUrl" class="form-control" placeholder="https://github.com/..." />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TwitterUrl" class="form-label fw-semibold">Twitter / X URL</label>
+                            <input asp-for="TwitterUrl" class="form-control" placeholder="https://x.com/..." />
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">
+                            <i class="bi bi-check-lg me-1"></i> Save Changes
+                        </button>
+                        <a asp-controller="Dashboard" asp-action="Admin" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

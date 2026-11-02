@@ -1,5 +1,6 @@
 using CoreConcepts.Data;
 using CoreConcepts.Models;
+using CoreConcepts.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,8 +11,46 @@ namespace CoreConcepts.Controllers;
 [Authorize(Roles = IdentitySeed.AdminRole)]
 public class AdminController(
     ApplicationDbContext context,
+    SiteSettingsService settingsService,
     IWebHostEnvironment environment) : Controller
 {
+    // ==========================================
+    // SITE & FOOTER SETTINGS CMS
+    // ==========================================
+    [HttpGet]
+    public async Task<IActionResult> Settings()
+    {
+        var settings = await settingsService.GetSettingsAsync();
+        return View(settings);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Settings(SiteSettings model)
+    {
+        if (ModelState.IsValid)
+        {
+            var settings = await settingsService.GetSettingsAsync();
+            settings.CompanyName = model.CompanyName;
+            settings.CompanyShortName = model.CompanyShortName;
+            settings.FooterAboutText = model.FooterAboutText;
+            settings.OfficeAddress = model.OfficeAddress;
+            settings.ContactPhone = model.ContactPhone;
+            settings.ContactEmail = model.ContactEmail;
+            settings.CareerEmail = model.CareerEmail;
+            settings.OfficeHours = model.OfficeHours;
+            settings.FacebookUrl = model.FacebookUrl;
+            settings.LinkedInUrl = model.LinkedInUrl;
+            settings.GitHubUrl = model.GitHubUrl;
+            settings.TwitterUrl = model.TwitterUrl;
+
+            await context.SaveChangesAsync();
+            TempData["Success"] = "Footer & Site Settings updated successfully!";
+            return RedirectToAction(nameof(Settings));
+        }
+        return View(model);
+    }
+
     // ==========================================
     // HERO BANNERS MANAGEMENT
     // ==========================================

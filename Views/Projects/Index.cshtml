@@ -4,7 +4,7 @@
     var categories = ViewBag.Categories as List<string> ?? new List<string>();
 }
 
-<div class="bg-dark text-white py-5 mb-5">
+<div class="bg-dark text-white py-5 mb-5 position-relative">
     <div class="container text-center">
         <h1 class="display-5 fw-bold">Projects Showcase</h1>
         <p class="lead text-light opacity-75 mx-auto" style="max-width: 650px;">
@@ -14,6 +14,25 @@
 </div>
 
 <div class="container mb-5">
+
+    <!-- Admin Top Action Bar -->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="alert alert-warning d-flex justify-content-between align-items-center rounded-3 shadow-xs mb-4">
+            <div>
+                <i class="bi bi-shield-lock-fill me-2"></i>
+                <strong>Admin Quick Controls:</strong> You can edit any project, change status/images, or publish new ones directly.
+            </div>
+            <div>
+                <a asp-controller="Admin" asp-action="CreateProject" class="btn btn-primary btn-sm fw-semibold">
+                    <i class="bi bi-plus-lg me-1"></i> Add New Project
+                </a>
+                <a asp-controller="Admin" asp-action="Projects" class="btn btn-outline-dark btn-sm ms-1">
+                    Manage Table View
+                </a>
+            </div>
+        </div>
+    }
 
     <!-- Search & Filter Bar -->
     <div class="card border-0 shadow-sm p-3 mb-4 rounded-3">
@@ -54,7 +73,18 @@
             @foreach (var project in Model)
             {
                 <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 border-0 shadow-sm feature-card overflow-hidden">
+                    <div class="card h-100 border-0 shadow-sm feature-card overflow-hidden position-relative">
+                        
+                        <!-- Admin Quick Edit floating button -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="position-absolute top-0 end-0 m-2 z-3 d-flex gap-1">
+                                <a asp-controller="Admin" asp-action="EditProject" asp-route-id="@project.Id" class="btn btn-warning btn-sm shadow-sm py-0 px-2" style="font-size: 0.8rem;" title="Edit Project & Image">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            </div>
+                        }
+
                         @if (!string.IsNullOrEmpty(project.ImagePath))
                         {
                             <img src="@project.ImagePath" class="card-img-top" alt="@project.Title" style="height: 220px; object-fit: cover;">

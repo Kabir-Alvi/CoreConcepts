@@ -1,0 +1,82 @@
+@model CoreConcepts.Models.SiteSettings
+@{
+    ViewData["Title"] = "Edit About Us Page";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold mb-0">Edit About Us Content</h3>
+                    <a asp-action="About" class="btn btn-outline-secondary btn-sm">View Page</a>
+                </div>
+
+                <form asp-action="EditAbout" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="AboutMissionTitle" class="form-label fw-semibold">Mission Heading</label>
+                        <input asp-for="AboutMissionTitle" class="form-control" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="AboutMissionContent" class="form-label fw-semibold">Mission Content / Story</label>
+                        <textarea asp-for="AboutMissionContent" class="form-control" rows="6" required></textarea>
+                    </div>
+
+                    <h5 class="fw-bold mb-3 border-bottom pb-2">Edit 4 Focus Pillars</h5>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 1 Title</label>
+                            <input asp-for="Pillar1Title" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 1 Description</label>
+                            <input asp-for="Pillar1Desc" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 2 Title</label>
+                            <input asp-for="Pillar2Title" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 2 Description</label>
+                            <input asp-for="Pillar2Desc" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 3 Title</label>
+                            <input asp-for="Pillar3Title" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 3 Description</label>
+                            <input asp-for="Pillar3Desc" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 4 Title</label>
+                            <input asp-for="Pillar4Title" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pillar 4 Description</label>
+                            <input asp-for="Pillar4Desc" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">Update About Page</button>
+                        <a asp-action="About" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

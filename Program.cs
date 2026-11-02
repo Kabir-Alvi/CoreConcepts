@@ -1,5 +1,6 @@
 using CoreConcepts.Data;
 using CoreConcepts.Models;
+using CoreConcepts.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Configure Microsoft SQL Server (SQLEXPRESS)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<SiteSettingsService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

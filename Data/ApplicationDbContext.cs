@@ -13,6 +13,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<JobCategory> JobCategories { get; set; }
     public DbSet<JobOpening> JobOpenings { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
+    public DbSet<SiteSettings> SiteSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

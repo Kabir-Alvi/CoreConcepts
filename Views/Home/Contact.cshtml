@@ -1,5 +1,6 @@
+@model CoreConcepts.Models.SiteSettings
 @{
-    ViewData["Title"] = "Contact CoreConcepts (CC)";
+    ViewData["Title"] = "Contact " + Model.CompanyName;
 }
 
 <div class="bg-dark text-white py-5 mb-5">
@@ -12,6 +13,20 @@
 </div>
 
 <div class="container mb-5">
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="alert alert-warning d-flex justify-content-between align-items-center rounded-3 shadow-xs mb-4">
+            <div>
+                <i class="bi bi-shield-lock-fill me-2"></i>
+                <strong>Admin Notice:</strong> The office address, phone, and email shown here are managed via Site Settings.
+            </div>
+            <a asp-controller="Admin" asp-action="Settings" class="btn btn-warning btn-sm fw-semibold">
+                <i class="bi bi-pencil-square me-1"></i> Edit Contact Details
+            </a>
+        </div>
+    }
+
     <div class="row g-5">
         <div class="col-lg-6">
             <h3 class="fw-bold mb-4">Send Us a Message</h3>
@@ -37,29 +52,38 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-light">
-                <h4 class="fw-bold mb-4">Contact Information</h4>
+            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-light position-relative">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0">Headquarters & Info</h4>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Settings" class="btn btn-outline-warning btn-xs py-0 px-2" style="font-size: 0.8rem;">
+                            <i class="bi bi-pencil"></i> Edit Info
+                        </a>
+                    }
+                </div>
                 <div class="d-flex flex-column gap-4">
                     <div class="d-flex align-items-start gap-3">
                         <div class="btn btn-primary btn-sm rounded-circle p-2"><i class="bi bi-geo-alt fs-5"></i></div>
                         <div>
                             <h6 class="fw-bold mb-1">Office Location</h6>
-                            <p class="text-muted mb-0">Banani Commercial Area, Road 11, Dhaka 1213, Bangladesh</p>
+                            <p class="text-muted mb-0">@Model.OfficeAddress</p>
                         </div>
                     </div>
                     <div class="d-flex align-items-start gap-3">
                         <div class="btn btn-primary btn-sm rounded-circle p-2"><i class="bi bi-envelope fs-5"></i></div>
                         <div>
-                            <h6 class="fw-bold mb-1">Email Us</h6>
-                            <p class="text-muted mb-0">contact@coreconcepts.com</p>
-                            <p class="text-muted mb-0">career@coreconcepts.com</p>
+                            <h6 class="fw-bold mb-1">Email Addresses</h6>
+                            <p class="text-muted mb-0">General: @Model.ContactEmail</p>
+                            <p class="text-muted mb-0">Careers: @Model.CareerEmail</p>
                         </div>
                     </div>
                     <div class="d-flex align-items-start gap-3">
                         <div class="btn btn-primary btn-sm rounded-circle p-2"><i class="bi bi-telephone fs-5"></i></div>
                         <div>
-                            <h6 class="fw-bold mb-1">Call Us</h6>
-                            <p class="text-muted mb-0">+880 1700-000000 (Sun-Thu, 9am - 6pm)</p>
+                            <h6 class="fw-bold mb-1">Phone & Hours</h6>
+                            <p class="text-muted mb-0">@Model.ContactPhone</p>
+                            <small class="text-muted">(@Model.OfficeHours)</small>
                         </div>
                     </div>
                 </div>

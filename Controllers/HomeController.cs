@@ -1,11 +1,15 @@
 using CoreConcepts.Data;
 using CoreConcepts.Models;
+using CoreConcepts.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreConcepts.Controllers;
 
-public class HomeController(ApplicationDbContext context) : Controller
+public class HomeController(
+    ApplicationDbContext context,
+    SiteSettingsService settingsService) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -43,14 +47,46 @@ public class HomeController(ApplicationDbContext context) : Controller
         return View(vm);
     }
 
-    public IActionResult About()
+    public async Task<IActionResult> About()
     {
-        return View();
+        var settings = await settingsService.GetSettingsAsync();
+        return View(settings);
     }
 
-    public IActionResult Contact()
+    [Authorize(Roles = IdentitySeed.AdminRole)]
+    [HttpGet]
+    public async Task<IActionResult> EditAbout()
     {
-        return View();
+        var settings = await settingsService.GetSettingsAsync();
+        return View(settings);
+    }
+
+    [Authorize(Roles = IdentitySeed.AdminRole)]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditAbout(SiteSettings model)
+    {
+        var settings = await settingsService.GetSettingsAsync();
+        settings.AboutMissionTitle = model.AboutMissionTitle;
+        settings.AboutMissionContent = model.AboutMissionContent;
+        settings.Pillar1Title = model.Pillar1Title;
+        settings.Pillar1Desc = model.Pillar1Desc;
+        settings.Pillar2Title = model.Pillar2Title;
+        settings.Pillar2Desc = model.Pillar2Desc;
+        settings.Pillar3Title = model.Pillar3Title;
+        settings.Pillar3Desc = model.Pillar3Desc;
+        settings.Pillar4Title = model.Pillar4Title;
+        settings.Pillar4Desc = model.Pillar4Desc;
+
+        await context.SaveChangesAsync();
+        TempData["Success"] = "About Us page content updated successfully!";
+        return RedirectToAction(nameof(About));
+    }
+
+    public async Task<IActionResult> Contact()
+    {
+        var settings = await settingsService.GetSettingsAsync();
+        return View(settings);
     }
 
     public IActionResult Privacy()

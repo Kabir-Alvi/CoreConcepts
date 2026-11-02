@@ -1,9 +1,13 @@
+@inject CoreConcepts.Services.SiteSettingsService SettingsService
+@{
+    var settings = await SettingsService.GetSettingsAsync();
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CoreConcepts (CC)</title>
+    <title>@ViewData["Title"] - @settings.CompanyName (@settings.CompanyShortName)</title>
     
     <!-- Bootstrap 5 CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -22,8 +26,8 @@
     <div class="bg-dark text-white py-1 px-3 d-none d-md-block" style="font-size: 0.85rem;">
         <div class="container d-flex justify-content-between align-items-center">
             <div>
-                <i class="bi bi-geo-alt-fill text-primary me-1"></i> Dhaka, Bangladesh &nbsp;|&nbsp; 
-                <i class="bi bi-envelope-fill text-primary me-1"></i> career@coreconcepts.com
+                <i class="bi bi-geo-alt-fill text-primary me-1"></i> @settings.OfficeAddress &nbsp;|&nbsp; 
+                <i class="bi bi-envelope-fill text-primary me-1"></i> @settings.CareerEmail
             </div>
             <div>
                 <span class="badge bg-success me-2">We Are Hiring!</span>
@@ -39,8 +43,8 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center fw-bold fs-4 text-white" asp-controller="Home" asp-action="Index">
-                    <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5">CC</span>
-                    <span>Core<span class="text-primary">Concepts</span></span>
+                    <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5">@settings.CompanyShortName</span>
+                    <span>@settings.CompanyName</span>
                 </a>
                 
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
@@ -102,6 +106,7 @@
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Admin"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Settings"><i class="bi bi-sliders me-2"></i>Footer & Site CMS</a></li>
                                         <li><a class="dropdown-item" asp-controller="Admin" asp-action="Banners"><i class="bi bi-image me-2"></i>Banners</a></li>
                                         <li><a class="dropdown-item" asp-controller="Admin" asp-action="Projects"><i class="bi bi-folder-check me-2"></i>Projects</a></li>
                                         <li><a class="dropdown-item" asp-controller="Admin" asp-action="Jobs"><i class="bi bi-briefcase me-2"></i>Job Postings</a></li>
@@ -143,7 +148,7 @@
         </nav>
     </header>
 
-    <!-- Global Toast / TempData Alerts -->
+    <!-- Global Alerts -->
     @if (TempData["Success"] != null || TempData["SuccessMessage"] != null)
     {
         <div class="container mt-3">
@@ -180,24 +185,45 @@
         @RenderBody()
     </main>
 
-    <!-- Professional Dynamic Footer -->
-    <footer class="bg-dark text-white pt-5 pb-3 mt-auto border-top border-secondary">
+    <!-- Dynamic Footer Controlled by Admin -->
+    <footer class="bg-dark text-white pt-5 pb-3 mt-auto border-top border-secondary position-relative">
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="container mb-3 text-end">
+                <a asp-controller="Admin" asp-action="Settings" class="btn btn-warning btn-sm shadow-sm">
+                    <i class="bi bi-pencil-square me-1"></i> Edit Footer & Site Details (Admin)
+                </a>
+            </div>
+        }
+
         <div class="container">
             <div class="row g-4">
                 <!-- Company Info -->
                 <div class="col-lg-4 col-md-6">
                     <div class="d-flex align-items-center mb-3">
-                        <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5">CC</span>
-                        <h4 class="fw-bold mb-0 text-white">Core<span class="text-primary">Concepts</span></h4>
+                        <span class="badge bg-primary text-white p-2 rounded-3 me-2 fs-5">@settings.CompanyShortName</span>
+                        <h4 class="fw-bold mb-0 text-white">@settings.CompanyName</h4>
                     </div>
                     <p class="text-muted" style="line-height: 1.6;">
-                        CoreConcepts (CC) is a forward-thinking software development and innovation agency. We deliver enterprise solutions, modern UI/UX design, and empower future talent through real-industry internship programs.
+                        @settings.FooterAboutText
                     </p>
                     <div class="d-flex gap-2">
-                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-github"></i></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-twitter-x"></i></a>
+                        @if (!string.IsNullOrEmpty(settings.FacebookUrl))
+                        {
+                            <a href="@settings.FacebookUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                        }
+                        @if (!string.IsNullOrEmpty(settings.LinkedInUrl))
+                        {
+                            <a href="@settings.LinkedInUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-linkedin"></i></a>
+                        }
+                        @if (!string.IsNullOrEmpty(settings.GitHubUrl))
+                        {
+                            <a href="@settings.GitHubUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-github"></i></a>
+                        }
+                        @if (!string.IsNullOrEmpty(settings.TwitterUrl))
+                        {
+                            <a href="@settings.TwitterUrl" target="_blank" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="bi bi-twitter-x"></i></a>
+                        }
                     </div>
                 </div>
 
@@ -224,14 +250,14 @@
                     </ul>
                 </div>
 
-                <!-- Contact & Office -->
+                <!-- Contact & Headquarters -->
                 <div class="col-lg-3 col-md-6">
                     <h5 class="fw-bold text-white mb-3">Headquarters</h5>
                     <ul class="list-unstyled text-muted d-flex flex-column gap-2">
-                        <li><i class="bi bi-geo-alt text-primary me-2"></i> Banani C/A, Dhaka 1213, Bangladesh</li>
-                        <li><i class="bi bi-telephone text-primary me-2"></i> +880 1700-000000</li>
-                        <li><i class="bi bi-envelope text-primary me-2"></i> contact@coreconcepts.com</li>
-                        <li><i class="bi bi-clock text-primary me-2"></i> Sun - Thu: 9:00 AM - 6:00 PM</li>
+                        <li><i class="bi bi-geo-alt text-primary me-2"></i> @settings.OfficeAddress</li>
+                        <li><i class="bi bi-telephone text-primary me-2"></i> @settings.ContactPhone</li>
+                        <li><i class="bi bi-envelope text-primary me-2"></i> @settings.ContactEmail</li>
+                        <li><i class="bi bi-clock text-primary me-2"></i> @settings.OfficeHours</li>
                     </ul>
                 </div>
             </div>
@@ -240,7 +266,7 @@
 
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start text-muted" style="font-size: 0.9rem;">
-                    &copy; @DateTime.UtcNow.Year <span class="fw-bold text-white">CoreConcepts (CC)</span>. All rights reserved.
+                    &copy; @DateTime.UtcNow.Year <span class="fw-bold text-white">@settings.CompanyName (@settings.CompanyShortName)</span>. All rights reserved.
                 </div>
                 <div class="col-md-6 text-center text-md-end text-muted mt-2 mt-md-0" style="font-size: 0.9rem;">
                     <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none me-3">Privacy Policy</a>
