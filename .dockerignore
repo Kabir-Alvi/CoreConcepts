@@ -1,0 +1,6 @@
+**/.git
+**/.vs
+**/bin
+**/obj
+**/.github
+Database_Schema.sql

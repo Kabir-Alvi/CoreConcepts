@@ -10,12 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.User.json", optional: true, reloadOnChange: true);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Configure Microsoft SQL Server (SQLEXPRESS)
+// Hybrid Provider: Uses SQL Server on Windows local environment; Uses SQLite in Linux/Render container
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    if (OperatingSystem.IsWindows() && !string.IsNullOrWhiteSpace(connectionString) && connectionString.Contains("SQLEXPRESS", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseSqlServer(connectionString);
+    }
+    else
+    {
+        // Standalone persistent zero-configuration SQLite database for Render
+        var dbPath = Path.Combine(builder.Environment.ContentRootPath, "coreconcepts_cloud.db");
+        options.UseSqlite($"Data Source={dbPath}");
+    }
+});
 
 builder.Services.AddScoped<SiteSettingsService>();
 
@@ -49,23 +59,13 @@ app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var creator = dbContext.Database.GetService<IRelationalDatabaseCreator>();
     
-    // Create database and any missing tables automatically!
-    if (!creator.Exists())
+    // Automatically creates the database & all tables on local OR cloud!
+    await dbContext.Database.EnsureCreatedAsync();
+
+    if (dbContext.Database.IsSqlServer())
     {
-        creator.Create();
-    }
-    
-    // Ensure all tables exist using raw DDL generation if tables are missing
-    try
-    {
-        creator.CreateTables();
-    }
-    catch
-    {
-        // Tables already created previously, ensure newly added tables exist:
-        await EnsureAdditionalTablesExistAsync(dbContext);
+        await EnsureAdditionalTablesExistSqlServerAsync(dbContext);
     }
 
     await IdentitySeed.InitializeAsync(scope.ServiceProvider, app.Configuration);
@@ -80,9 +80,8 @@ app.MapControllerRoute(
 
 app.Run();
 
-static async Task EnsureAdditionalTablesExistAsync(ApplicationDbContext db)
+static async Task EnsureAdditionalTablesExistSqlServerAsync(ApplicationDbContext db)
 {
-    // Ensure SiteSettings table exists
     var sqlSiteSettings = @"
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SiteSettings')
     BEGIN
@@ -114,7 +113,6 @@ static async Task EnsureAdditionalTablesExistAsync(ApplicationDbContext db)
         );
     END";
 
-    // Ensure CompanyLeaders table exists
     var sqlCompanyLeaders = @"
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CompanyLeaders')
     BEGIN
@@ -133,6 +131,10 @@ static async Task EnsureAdditionalTablesExistAsync(ApplicationDbContext db)
         );
     END";
 
-    await db.Database.ExecuteSqlRawAsync(sqlSiteSettings);
-    await db.Database.ExecuteSqlRawAsync(sqlCompanyLeaders);
+    try
+    {
+        await db.Database.ExecuteSqlRawAsync(sqlSiteSettings);
+        await db.Database.ExecuteSqlRawAsync(sqlCompanyLeaders);
+    }
+    catch { }
 }
